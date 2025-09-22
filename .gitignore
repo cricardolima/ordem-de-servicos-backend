@@ -108,11 +108,6 @@ public
 .yarn/install-state.gz
 .pnp.*
 
-# Prisma
-# Keep the schema file but ignore generated files
-prisma/migrations/
-!prisma/migrations/.gitkeep
-
 # Database
 *.db
 *.sqlite

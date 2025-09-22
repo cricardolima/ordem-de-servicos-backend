@@ -1,0 +1,126 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String    @id @default(uuid()) @map("id")
+    name      String
+    email     String    @unique
+    password  String    @map("password_hash")
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @updatedAt @map("updated_at")
+    deletedAt DateTime? @map("deleted_at")
+    role      Role      @default(USER) @map("role")
+
+    createdProfessionals Professionals[] @relation("CreatedProfessionals")
+    updatedProfessionals Professionals[] @relation("UpdatedProfessionals")
+    deletedProfessionals Professionals[] @relation("DeletedProfessionals")
+
+    createdInvoices ServicesInvoice[] @relation("CreatedInvoices")
+    updatedInvoices ServicesInvoice[] @relation("UpdatedInvoices")
+    deletedInvoices ServicesInvoice[] @relation("DeletedInvoices")
+
+    @@index([createdAt])
+    @@index([deletedAt])
+    @@map("users")
+}
+
+model Professionals {
+    id           String    @id @default(uuid()) @map("id")
+    name         String
+    registration String    @map("registration")
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime? @updatedAt @map("updated_at")
+    deletedAt    DateTime? @map("deleted_at")
+
+    // Campo para a relação muitos-para-muitos com ServicesInvoice
+    servicesInvoice ServicesInvoice[]
+
+    createdById String @map("created_by")
+    createdBy   User   @relation("CreatedProfessionals", fields: [createdById], references: [id])
+
+    updatedById String? @map("updated_by")
+    updatedBy   User?   @relation("UpdatedProfessionals", fields: [updatedById], references: [id])
+
+    deletedById String? @map("deleted_by")
+    deletedBy   User?   @relation("DeletedProfessionals", fields: [deletedById], references: [id])
+
+    @@index([createdById, deletedAt])
+    @@index([updatedById, updatedAt])
+    @@index([registration])
+    @@map("professionals")
+}
+
+model ServicesType {
+    id          String    @id @default(uuid()) @map("id")
+    serviceName String    @map("service_name")
+    serviceCode String    @map("service_code")
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime? @updatedAt @map("updated_at")
+    deletedAt   DateTime? @map("deleted_at")
+
+    servicesInvoice ServicesInvoice[]
+
+    @@index([serviceCode])
+    @@index([serviceName])
+    @@map("services_type")
+}
+
+model Client {
+    id        String    @id @default(uuid()) @map("id")
+    name      String    @map("name")
+    phone     String    @map("phone")
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @updatedAt @map("updated_at")
+
+    servicesInvoice ServicesInvoice[]
+
+    @@map("clients")
+}
+
+model ServicesInvoice {
+    id          String    @id @default(uuid()) @map("id")
+    description String    @map("description")
+    rootCause   String    @map("root_cause")
+    status      Status    @map("status")
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime? @updatedAt @map("updated_at")
+    deletedAt   DateTime? @map("deleted_at")
+
+    // Campo para a relação muitos-para-muitos com Professionals
+    professionals Professionals[]
+
+    serviceTypeId String       @map("service_type_id")
+    serviceType   ServicesType @relation(fields: [serviceTypeId], references: [id])
+
+    clientId String @map("client_id")
+    client   Client @relation(fields: [clientId], references: [id])
+
+    createdById String  @map("created_by")
+    createdBy   User    @relation("CreatedInvoices", fields: [createdById], references: [id])
+    updatedById String? @map("updated_by")
+    updatedBy   User?   @relation("UpdatedInvoices", fields: [updatedById], references: [id])
+    deletedById String? @map("deleted_by")
+    deletedBy   User?   @relation("DeletedInvoices", fields: [deletedById], references: [id])
+
+    @@index([serviceTypeId])
+    @@index([clientId])
+    @@map("services_invoice")
+}
+
+enum Role {
+    ADMIN
+    USER
+}
+
+enum Status {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
