@@ -17,10 +17,12 @@ model User {
     deletedAt DateTime? @map("deleted_at")
     role      Role      @default(USER) @map("role")
 
+    // Campo para a relação muitos-para-muitos com Professionals
     createdProfessionals Professionals[] @relation("CreatedProfessionals")
     updatedProfessionals Professionals[] @relation("UpdatedProfessionals")
     deletedProfessionals Professionals[] @relation("DeletedProfessionals")
 
+    // Campo para a relação muitos-para-muitos com ServicesInvoice
     createdInvoices ServicesInvoice[] @relation("CreatedInvoices")
     updatedInvoices ServicesInvoice[] @relation("UpdatedInvoices")
     deletedInvoices ServicesInvoice[] @relation("DeletedInvoices")
@@ -64,6 +66,7 @@ model ServicesType {
     updatedAt   DateTime? @updatedAt @map("updated_at")
     deletedAt   DateTime? @map("deleted_at")
 
+    // Campo para a relação muitos-para-muitos com ServicesInvoice
     servicesInvoice ServicesInvoice[]
 
     @@index([serviceCode])
@@ -79,6 +82,8 @@ model Client {
     updatedAt DateTime? @updatedAt @map("updated_at")
 
     servicesInvoice ServicesInvoice[]
+
+    clientAddress ClientAddress[] @relation("ClientAddress")
 
     @@map("clients")
 }
@@ -111,6 +116,25 @@ model ServicesInvoice {
     @@index([serviceTypeId])
     @@index([clientId])
     @@map("services_invoice")
+}
+
+model ClientAddress {
+    id           String    @id @default(uuid()) @map("id")
+    street       String    @map("street")
+    number       String    @map("number")
+    complement   String?   @map("complement")
+    neighborhood String    @map("neighborhood")
+    zipCode      String?   @map("zip_code")
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime? @updatedAt @map("updated_at")
+    deletedAt    DateTime? @map("deleted_at")
+
+    // Campo para a relação muitos-para-muitos com Client
+    client Client[] @relation("ClientAddress")
+
+    @@index([neighborhood])
+    @@index([street])
+    @@map("client_address")
 }
 
 enum Role {
