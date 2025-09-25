@@ -8,14 +8,14 @@ datasource db {
 }
 
 model User {
-    id        String    @id @default(uuid()) @map("id")
-    name      String
-    email     String    @unique
-    password  String    @map("password_hash")
-    createdAt DateTime  @default(now()) @map("created_at")
-    updatedAt DateTime? @updatedAt @map("updated_at")
-    deletedAt DateTime? @map("deleted_at")
-    role      Role      @default(USER) @map("role")
+    id           String    @id @default(uuid()) @map("id")
+    name         String
+    password     String    @map("password_hash")
+    registration String    @unique @map("registration")
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime? @updatedAt @map("updated_at")
+    deletedAt    DateTime? @map("deleted_at")
+    role         Role      @default(USER) @map("role")
 
     // Campo para a relação muitos-para-muitos com Professionals
     createdProfessionals Professionals[] @relation("CreatedProfessionals")
@@ -27,6 +27,8 @@ model User {
     updatedInvoices ServicesInvoice[] @relation("UpdatedInvoices")
     deletedInvoices ServicesInvoice[] @relation("DeletedInvoices")
 
+    refreshTokens RefreshToken[] @relation("RefreshTokens")
+
     @@index([createdAt])
     @@index([deletedAt])
     @@map("users")
@@ -35,7 +37,7 @@ model User {
 model Professionals {
     id           String    @id @default(uuid()) @map("id")
     name         String
-    registration String    @map("registration")
+    registration String    @unique @map("registration")
     createdAt    DateTime  @default(now()) @map("created_at")
     updatedAt    DateTime? @updatedAt @map("updated_at")
     deletedAt    DateTime? @map("deleted_at")
@@ -135,6 +137,17 @@ model ClientAddress {
     @@index([neighborhood])
     @@index([street])
     @@map("client_address")
+}
+
+model RefreshToken {
+    id        String    @id @default(uuid()) @map("id")
+    token     String    @unique @map("token")
+    expiresAt DateTime  @map("expires_at")
+    createdAt DateTime  @default(now()) @map("created_at")
+    revokedAt DateTime? @map("revoked_at")
+
+    userId String @map("user_id")
+    user   User   @relation("RefreshTokens", fields: [userId], references: [id])
 }
 
 enum Role {
