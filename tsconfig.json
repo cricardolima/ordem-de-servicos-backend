@@ -50,7 +50,8 @@
       "@container/*": ["./src/container/*"],
       "@repositories/*": ["./src/respositories/*"],
       "@utils/*": ["./src/utils/*"],
-      "@dtos/*": ["./src/dtos/*"]
+      "@dtos/*": ["./src/dtos/*"],
+      "@controllers/*": ["./src/controllers/*"]
     }
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],

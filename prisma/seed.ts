@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { hash } from "bcrypt";
+import "dotenv/config";
 
 const prisma = new PrismaClient();
 
@@ -6,6 +8,8 @@ const main = async () => {
     console.log("Starting seed...");
     await prisma.servicesType.deleteMany({});
     console.log("Deleted all services types.");
+    await prisma.user.deleteMany({});
+    console.log("Deleted all users.");
     await prisma.servicesType.createMany({
         data: [
             { serviceName: "Ligação de água", serviceCode: "ST1" },
@@ -17,6 +21,17 @@ const main = async () => {
             { serviceName: "Outros", serviceCode: "ST7" }
         ],
     });
+    console.log("Created all services types.");
+    
+    await prisma.user.create({
+        data: {
+            name: "Admin",
+            registration: "admin",
+            password: await hash("admin", Number(process.env.SALT_ROUNDS)),
+            role: "ADMIN",
+        },
+    });
+    console.log("Created admin user.");
     console.log("Seed completed successfully.");
 };
 
