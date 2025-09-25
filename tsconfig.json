@@ -45,7 +45,12 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@lib/*": ["./src/lib/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@use-cases/*": ["./src/use-cases/*"],
+      "@container/*": ["./src/container/*"],
+      "@repositories/*": ["./src/respositories/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@dtos/*": ["./src/dtos/*"]
     }
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],
