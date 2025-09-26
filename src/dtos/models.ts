@@ -18,3 +18,12 @@ export interface IUserLoginResponse {
     accessToken: string;
     refreshToken: string;
 }
+
+export interface IRefreshTokenRequestDto {
+    refreshToken: string;
+}
+
+export interface IValidateRefreshTokenResponse {
+    userId: string;
+    tokenId: string;
+}

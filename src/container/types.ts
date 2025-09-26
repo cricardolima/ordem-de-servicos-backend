@@ -4,4 +4,5 @@ export const TYPES = {
     IUserRepository: "IUserRepository",
     IRefreshTokenRepository: "IRefreshTokenRepository",
     IGenerateRefreshTokenUseCase: "IGenerateRefreshTokenUseCase",
+    IRefreshTokenUseCase: "IRefreshTokenUseCase",
 };
