@@ -24,4 +24,9 @@ export class AuthController {
     public async refreshToken(@requestBody() body: IRefreshTokenRequestDto) {
         return this.refreshTokenUseCase.validateRefreshToken(body.refreshToken);
     }
+
+    @httpPost("/logout")
+    public async logout(@requestBody() body: IRefreshTokenRequestDto) {
+        return this.refreshTokenUseCase.revokeRefreshToken(body.refreshToken);
+    }
 }
