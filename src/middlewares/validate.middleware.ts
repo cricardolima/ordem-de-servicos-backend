@@ -13,7 +13,6 @@ export const ValidateMiddleware = (schema: z.ZodSchema) => {
         } catch (error: any) {
             if (error instanceof z.ZodError) {
                 const parsedError = zodValidationErrorParse(error as unknown as ZodError);
-                console.log("parsedError", parsedError);
                 throw new ValidationException({ message: "Dados inválidos", fields: parsedError });
             }
             throw new BusinessException(error.message, error);

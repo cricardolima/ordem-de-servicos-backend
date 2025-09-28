@@ -11,7 +11,7 @@
     "target": "es2022",
     // For nodejs:
     "lib": ["ES2022"],
-    "types": ["node"],
+    "types": ["node", "jest"],
     "moduleResolution": "node",
 
     // Other Outputs
@@ -53,7 +53,7 @@
       "@dtos/*": ["./src/dtos/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@exceptions/*": ["./src/exceptions/*"],
-      "@middleware/*": ["./src/middleware/*"],
+      "@middleware/*": ["src/middlewares/*"],
       "@validators/*": ["./src/validators/*"]
     }
   },

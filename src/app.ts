@@ -9,8 +9,8 @@ import logger from "@utils/logger";
 import { setupProcessHandlers } from "@utils/processHandlers";
 
 export class App {
-    private server: InversifyExpressServer;
-    private container: Container;
+    private readonly server: InversifyExpressServer;
+    private readonly container: Container;
 
     constructor() {
         this.container = new ContainerApp().init();
