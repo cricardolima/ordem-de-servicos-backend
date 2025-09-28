@@ -5,6 +5,7 @@ import { TYPES } from "@container/types";
 import { IValidateRefreshTokenResponse } from "@dtos/models";
 import { RefreshToken } from "@prisma/client";
 import crypto from "crypto";
+import { BusinessException } from "@exceptions/business.exception";
 
 @injectable()
 export class RefreshTokenUseCase implements IRefreshTokenUseCase {
@@ -27,7 +28,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
             });
             return refreshToken;
         } catch (error) {
-            throw new Error("Failed to create refresh token");
+            throw new BusinessException("Failed to create refresh token", error as Error);
         }
 
     }
@@ -36,15 +37,15 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
         const refreshToken = await this.refreshTokenRepository.findByToken(token);
 
         if (!refreshToken) {
-            throw new Error("Refresh token not found");
+            throw new BusinessException("Refresh token not found");
         }
 
         if (refreshToken.revokedAt) {
-            throw new Error("Refresh token revoked");
+            throw new BusinessException("Refresh token revoked");
         }
 
         if (refreshToken.expiresAt < new Date()) {
-            throw new Error("Refresh token expired");
+            throw new BusinessException("Refresh token expired");
         }
 
         return {

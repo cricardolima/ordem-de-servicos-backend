@@ -22,7 +22,9 @@
     "inversify-express-utils": "^6.5.0",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.16.2",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "winston": "^3.17.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

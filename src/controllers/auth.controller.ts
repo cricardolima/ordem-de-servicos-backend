@@ -4,6 +4,8 @@ import { IRefreshTokenUseCase } from "@use-cases/RefreshToken";
 import { IUserLoginUseCase } from "@use-cases/UserLogin";
 import { inject } from "inversify";
 import { controller, httpPost, requestBody } from "inversify-express-utils";
+import { ValidateMiddleware } from "@middleware/validate.middleware";
+import { authSchema } from "@validators/auth.schema";
 
 @controller("/auth")
 export class AuthController {
@@ -15,7 +17,7 @@ export class AuthController {
         this.refreshTokenUseCase = refreshTokenUseCase;
     }
 
-    @httpPost("/login")
+    @httpPost("/login", ValidateMiddleware(authSchema))
     public async login(@requestBody() body: IUserLoginRequest) {
         return this.userLoginUseCase.execute(body);
     }

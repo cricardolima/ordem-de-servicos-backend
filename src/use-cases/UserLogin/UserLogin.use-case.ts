@@ -6,6 +6,7 @@ import verifyPassword from "@utils/verifyPassword";
 import jwt from "jsonwebtoken";
 import { IRefreshTokenUseCase } from "@use-cases/RefreshToken/RefreshToken.interface";
 import { IUserLoginRequest, IUserLoginResponse } from "@dtos/models";
+import { BusinessException } from "@exceptions/business.exception";
 
 @injectable()
 export class UserLoginUseCase implements IUserLoginUseCase {
@@ -21,12 +22,12 @@ export class UserLoginUseCase implements IUserLoginUseCase {
         const { registration, password } = request;
         const user = await this.userRepository.findByRegistration(registration);
         if (!user) {
-            throw new Error("User not found");
+            throw new BusinessException("User not found");
         }
 
         const isPasswordValid = await verifyPassword(password, user.password);
         if (!isPasswordValid) {
-            throw new Error("Invalid password");
+            throw new BusinessException("Invalid password");
         }
 
         const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: "15m" });

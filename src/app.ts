@@ -4,6 +4,9 @@ import { InversifyExpressServer } from "inversify-express-utils";
 import { ContainerApp } from "@container/inversify.config";
 import { Container } from "inversify";
 import cors from "cors";
+import { errorHandlerMiddleware } from "@middleware/errorHandler.middleware";
+import logger from "@utils/logger";
+import { setupProcessHandlers } from "@utils/processHandlers";
 
 export class App {
     private server: InversifyExpressServer;
@@ -30,20 +33,17 @@ export class App {
 
             // Middleware para logging básico
             app.use((req, res, next) => {
-                console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+                logger.info(`${new Date().toISOString()} - ${req.method} ${req.path}`);
                 next();
             });
+
+            // Middleware para process handlers
+            setupProcessHandlers();
         });
 
         this.server.setErrorConfig((app) => {
             // Middleware de tratamento de erros
-            app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-                console.error(err.stack);
-                res.status(500).json({
-                    error: "Erro interno do servidor",
-                    message: process.env.NODE_ENV === "development" ? err.message : "Algo deu errado"
-                });
-            });
+            app.use(errorHandlerMiddleware);
         });
     }
 
@@ -51,8 +51,8 @@ export class App {
         const app = this.server.build();
         
         app.listen(port, () => {
-            console.log(`🚀 Servidor rodando na porta ${port}`);
-            console.log(`📊 Ambiente: ${process.env.NODE_ENV || "development"}`);
+            logger.info(`🚀 Servidor rodando na porta ${port}`);
+            logger.info(`📊 Ambiente: ${process.env.NODE_ENV || "development"}`);
         });
     }
 

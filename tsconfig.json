@@ -51,7 +51,10 @@
       "@repositories/*": ["./src/respositories/*"],
       "@utils/*": ["./src/utils/*"],
       "@dtos/*": ["./src/dtos/*"],
-      "@controllers/*": ["./src/controllers/*"]
+      "@controllers/*": ["./src/controllers/*"],
+      "@exceptions/*": ["./src/exceptions/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@validators/*": ["./src/validators/*"]
     }
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],
