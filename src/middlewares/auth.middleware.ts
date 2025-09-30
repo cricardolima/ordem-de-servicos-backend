@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { UnauthorizedException } from "@exceptions/unauthorized.exception";
 import { BusinessException } from "@exceptions/business.exception";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface DecodedToken {
     userId: string;
