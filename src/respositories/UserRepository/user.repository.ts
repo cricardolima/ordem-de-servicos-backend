@@ -5,11 +5,13 @@ import { User } from "@prisma/client";
 
 @injectable()
 export class UserRepository implements IUserRepository {
-    public async findByRegistration(registration: string): Promise<User> {
-        return await prisma.user.findFirstOrThrow({
+    public async findByRegistration(registration: string): Promise<User | null> {
+        const user = await prisma.user.findUnique({
             where: {
                 registration
             },
-        }) as User;
+        }) || null;
+        
+        return user;
     }
 }

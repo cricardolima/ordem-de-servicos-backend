@@ -54,7 +54,8 @@
       "@controllers/*": ["./src/controllers/*"],
       "@exceptions/*": ["./src/exceptions/*"],
       "@middleware/*": ["src/middlewares/*"],
-      "@validators/*": ["./src/validators/*"]
+      "@validators/*": ["./src/validators/*"],
+      "@tests/*": ["./tests/*"]
     }
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],
