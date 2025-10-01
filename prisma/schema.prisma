@@ -148,6 +148,8 @@ model RefreshToken {
 
     userId String @map("user_id")
     user   User   @relation("RefreshTokens", fields: [userId], references: [id])
+
+    @@map("refresh_token")
 }
 
 enum Role {
