@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ValidationException } from "@exceptions/validation.exception";
 import { BusinessException } from "@exceptions/business.exception";
 import { UnauthorizedException } from "@exceptions/unauthorized.exception";
+import { NotFoundException } from "@exceptions/notFound.exception";
 
 export const errorHandlerMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
     console.error('Error:', {
@@ -11,7 +12,7 @@ export const errorHandlerMiddleware = (err: any, req: Request, res: Response, ne
         method: req.method,
         statusCode: err.statusCode,
         isOperational: err.isOperational,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toLocaleString()
     });
         
         if (err instanceof ValidationException) {
@@ -46,7 +47,18 @@ export const errorHandlerMiddleware = (err: any, req: Request, res: Response, ne
                 }
             });
         }
-        
+
+        if (err instanceof NotFoundException) {
+            return res.status(err.statusCode).json({
+                success: false,
+                error: {
+                    message: err.message,
+                    type: "not_found_error",
+                    ...(process.env.NODE_ENV === "development" ? { stack: err.stack, originalError: err.originalError } : {})
+                }
+            });
+        }
+
         return res.status(err.statusCode || 500).json({
             success: false,
             error: {

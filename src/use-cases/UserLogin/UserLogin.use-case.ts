@@ -6,8 +6,8 @@ import verifyPassword from "@utils/verifyPassword";
 import jwt from "jsonwebtoken";
 import { IRefreshTokenUseCase } from "@use-cases/RefreshToken/RefreshToken.interface";
 import { IUserLoginRequest, IUserLoginResponse } from "@dtos/models";
-import { BusinessException } from "@exceptions/business.exception";
 import { NotFoundException } from "@exceptions/notFound.exception";
+import { UnauthorizedException } from "@exceptions/unauthorized.exception";
 
 @injectable()
 export class UserLoginUseCase implements IUserLoginUseCase {
@@ -28,7 +28,7 @@ export class UserLoginUseCase implements IUserLoginUseCase {
 
         const isPasswordValid = await verifyPassword(password, user.password);
         if (!isPasswordValid) {
-            throw new BusinessException("Invalid password");
+            throw new UnauthorizedException("Invalid password");
         }
 
         const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: "15m" });

@@ -52,20 +52,11 @@ describe('RefreshTokenUseCase', () => {
         }));
     });
 
-    it('should validate a refresh token', async () => {
-        const refreshToken = await inMemoryRefreshTokenRepository.findByToken('refresh-token-1');
-        const validatedRefreshToken = await refreshTokenUseCase.validateRefreshToken(refreshToken.token);
-        
-        expect(validatedRefreshToken).toBeDefined();
-        expect(validatedRefreshToken).not.toBeNull();
-        expect(validatedRefreshToken).toEqual(expect.objectContaining({
-            tokenId: expect.any(String),
-            userId: expect.any(String),
-        }));
-    });
-
     it('should revoke a refresh token', async () => {
         const refreshToken = await inMemoryRefreshTokenRepository.findByToken('refresh-token-1');
+        if (!refreshToken) {
+            throw new Error('Refresh token not found');
+        }
         await refreshTokenUseCase.revokeRefreshToken(refreshToken.token);
         
         expect(refreshToken).toBeDefined();

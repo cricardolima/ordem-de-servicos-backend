@@ -9,7 +9,7 @@ import { InMemoryRefreshTokenRepository } from "@tests/repositories/InMemoryRefr
 import { IUserLoginRequest } from "@dtos/models";
 import { hash } from "bcrypt";
 import { NotFoundException } from "@exceptions/notFound.exception";
-import { BusinessException } from "@exceptions/business.exception";
+import { UnauthorizedException } from "@exceptions/unauthorized.exception";
 
 describe('UserLoginUseCase', () => {
     const saltRounds = Number(process.env.SALT_ROUNDS);
@@ -67,12 +67,12 @@ describe('UserLoginUseCase', () => {
         expect(userLoginUseCase.execute(loginRequest)).rejects.toThrow('User not found');
     });
 
-    it('should throw BusinessException when password is invalid', async () => {
+    it('should throw UnauthorizedException when password is invalid', async () => {
         const loginRequest: IUserLoginRequest = {
             registration: '1234567890',
             password: 'senha1234',
         };
-        await expect(userLoginUseCase.execute(loginRequest)).rejects.toThrow(BusinessException);
+        await expect(userLoginUseCase.execute(loginRequest)).rejects.toThrow(UnauthorizedException);
         expect(userLoginUseCase.execute(loginRequest)).rejects.toThrow('Invalid password');
     });
 });

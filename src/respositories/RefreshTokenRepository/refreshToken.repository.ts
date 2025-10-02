@@ -17,12 +17,14 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         });
     }
 
-    public async findByToken(token: string): Promise<RefreshToken> {
-        return await prisma.refreshToken.findUniqueOrThrow({
+    public async findByToken(token: string): Promise<RefreshToken | null> {
+        const refreshToken = await prisma.refreshToken.findFirst({
             where: {
                 token,
+                revokedAt: null,
             },
         });
+        return refreshToken || null;
     }
 
     public async revokeByToken(token: string): Promise<void> {

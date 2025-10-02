@@ -6,6 +6,7 @@ import { IValidateRefreshTokenResponse } from "@dtos/models";
 import { RefreshToken } from "@prisma/client";
 import crypto from "crypto";
 import { BusinessException } from "@exceptions/business.exception";
+import { NotFoundException } from "@exceptions/notFound.exception";
 
 @injectable()
 export class RefreshTokenUseCase implements IRefreshTokenUseCase {
@@ -33,29 +34,13 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
 
     }
 
-    public async validateRefreshToken(token: string): Promise<IValidateRefreshTokenResponse> {
-        const refreshToken = await this.refreshTokenRepository.findByToken(token);
-
-        if (!refreshToken) {
-            throw new BusinessException("Refresh token not found");
-        }
-
-        if (refreshToken.revokedAt) {
-            throw new BusinessException("Refresh token revoked");
-        }
-
-        if (refreshToken.expiresAt < new Date()) {
-            throw new BusinessException("Refresh token expired");
-        }
-
-        return {
-            userId: refreshToken.userId,
-            tokenId: refreshToken.id,
-        };
-    }
-
     public async revokeRefreshToken(token: string): Promise<void> {
-        await this.refreshTokenRepository.revokeByToken(token);
+        const refreshToken = await this.refreshTokenRepository.findByToken(token);
+        if (!refreshToken) {
+            throw new NotFoundException("Refresh token not found");
+        }
+
+       await this.refreshTokenRepository.revokeByToken(token);
     }
 
     public async revokeAllUserTokens(userId: string): Promise<void> {

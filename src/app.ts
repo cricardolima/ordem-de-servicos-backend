@@ -12,8 +12,8 @@ export class App {
     private readonly server: InversifyExpressServer;
     private readonly container: Container;
 
-    constructor() {
-        this.container = new ContainerApp().init();
+    constructor(container?: Container) {
+        this.container = container || new ContainerApp().init();
         this.server = new InversifyExpressServer(this.container);
         this.setupMiddleware();
     }

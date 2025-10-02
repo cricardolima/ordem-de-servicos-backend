@@ -37,14 +37,10 @@ export class InMemoryRefreshTokenRepository implements IRefreshTokenRepository {
         return refreshToken;
     }
 
-    public async findByToken(token: string): Promise<RefreshToken> {
+    public async findByToken(token: string): Promise<RefreshToken | null> {
         const refreshToken = this.refreshTokens.find(rt => rt.token === token);
-        
-        if (!refreshToken) {
-            throw new Error(`Refresh token ${token} not found`);
-        }
 
-        return refreshToken;
+        return refreshToken || null;
     }
 
     public async revokeByToken(token: string): Promise<void> {

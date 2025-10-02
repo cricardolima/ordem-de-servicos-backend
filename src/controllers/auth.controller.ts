@@ -6,6 +6,7 @@ import { inject } from "inversify";
 import { controller, httpPost, requestBody } from "inversify-express-utils";
 import { ValidateMiddleware } from "@middleware/validate.middleware";
 import { authSchema } from "@validators/auth.schema";
+import { refreshTokenSchema } from "@validators/refreshToken.schema";
 
 @controller("/auth")
 export class AuthController {
@@ -22,13 +23,12 @@ export class AuthController {
         return this.userLoginUseCase.execute(body);
     }
 
-    @httpPost("/refresh-token")
-    public async refreshToken(@requestBody() body: IRefreshTokenRequestDto) {
-        return this.refreshTokenUseCase.validateRefreshToken(body.refreshToken);
-    }
-
-    @httpPost("/logout")
+    @httpPost("/logout", ValidateMiddleware(refreshTokenSchema))
     public async logout(@requestBody() body: IRefreshTokenRequestDto) {
-        return this.refreshTokenUseCase.revokeRefreshToken(body.refreshToken);
+        await this.refreshTokenUseCase.revokeRefreshToken(body.refreshToken);
+        return {
+            success: true,
+            message: "Logout successful"
+        };
     }
 }

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { ValidationException } from "@exceptions/validation.exception";
 import { BusinessException } from "@exceptions/business.exception";
 import { UnauthorizedException } from "@exceptions/unauthorized.exception";
+import { NotFoundException } from "@exceptions/notFound.exception";
 
 describe('ErrorHandlerMiddleware', () => {
     let req: Partial<Request>;
@@ -98,4 +99,21 @@ describe('ErrorHandlerMiddleware', () => {
             }
         });
     })
+
+    it('should handle a NotFoundException', () => {
+        const err = new NotFoundException('Not found error');
+
+        errorHandlerMiddleware(err, req as Request, res as Response, next);
+
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            error: {
+                message: 'Not found error',
+                type: 'not_found_error',
+                stack: undefined,
+                originalError: undefined
+            }
+        });
+    });
 })
