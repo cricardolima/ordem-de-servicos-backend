@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IUserRepository } from "@repositories/UserRepository/user.respository.interface";
 import { User, Role } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
-import { NotFoundException } from "@exceptions/notFound.exception";
+import { ICreateUserRequest } from "@dtos/models";
 
 @injectable()
 export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> implements IUserRepository {
@@ -11,14 +11,8 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
         return this.items;
     }
 
-    public async findByRegistration(registration: string): Promise<User> {
-        const user = this.findByProperty('registration', registration);
-        
-        if (!user) {
-            throw new NotFoundException("User not found");
-        }
-
-        return user;
+    public async findByRegistration(registration: string): Promise<User | null> {
+        return this.findByProperty('registration', registration) || null;
     }
 
     
@@ -99,5 +93,9 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
         return this.updateByProperty('id', id, { 
             deletedAt: null 
         });
+    }
+
+    public async create(user: ICreateUserRequest): Promise<User> {
+        return this.createTestUser(user);
     }
 }

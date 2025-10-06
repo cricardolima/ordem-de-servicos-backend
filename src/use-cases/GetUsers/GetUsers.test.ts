@@ -4,10 +4,9 @@ import { TYPES } from "@container/types";
 import { IUserRepository } from "@repositories/UserRepository";
 import { InMemoryUserRepositoryV2 } from "@tests/repositories/InMemoryUserRepositoryV2";
 import { GetUsersUseCase } from "./GetUsers.use-case";
-import { hash } from "bcrypt";
+import { hashPassword } from "@utils/hashPassword";
 
 describe("GetUsersUseCase", () => {
-    const saltRounds = Number(process.env.SALT_ROUNDS);
     let testContainer: Container;
     let inMemoryUserRepository: InMemoryUserRepositoryV2;
     let getUsersUseCase: GetUsersUseCase;
@@ -23,7 +22,7 @@ describe("GetUsersUseCase", () => {
 
         inMemoryUserRepository.createTestUsers(5, {
             registration: '1234567890',
-            password: await hash('senha123', saltRounds),
+            password: await hashPassword("password123"),
         });
     });
 

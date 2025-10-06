@@ -6,6 +6,7 @@ import { AuthController, UserController } from "@controllers/index";
 import { IRefreshTokenRepository, RefreshTokenRepository } from "@repositories/RefreshTokenRepository";
 import { IRefreshTokenUseCase, RefreshTokenUseCase } from "@use-cases/RefreshToken";
 import { IGetUsersUseCase, GetUsersUseCase } from "@use-cases/GetUsers";
+import { ICreateUserUseCase, CreateUserUseCase } from "@use-cases/CreateUser";
 
 export class ContainerApp {
     public init(): Container {
@@ -15,6 +16,7 @@ export class ContainerApp {
         container.bind<IUserLoginUseCase>(TYPES.IUserLoginUseCase).to(UserLoginUseCase);
         container.bind<IRefreshTokenUseCase>(TYPES.IRefreshTokenUseCase).to(RefreshTokenUseCase);
         container.bind<IGetUsersUseCase>(TYPES.IGetUsersUseCase).to(GetUsersUseCase);
+        container.bind<ICreateUserUseCase>(TYPES.ICreateUserUseCase).to(CreateUserUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);

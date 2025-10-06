@@ -6,4 +6,5 @@ export const TYPES = {
     IGenerateRefreshTokenUseCase: "IGenerateRefreshTokenUseCase",
     IRefreshTokenUseCase: "IRefreshTokenUseCase",
     IGetUsersUseCase: "IGetUsersUseCase",
+    ICreateUserUseCase: "ICreateUserUseCase",
 };

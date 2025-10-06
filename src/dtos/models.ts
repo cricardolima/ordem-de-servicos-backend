@@ -30,3 +30,10 @@ export interface IValidateRefreshTokenResponse {
 }
 
 export type Roles = "ADMIN" | "USER" | Role | Role[];
+
+export interface ICreateUserRequest {
+    name: string;
+    registration: string;
+    password: string;
+    role: Role;
+}
