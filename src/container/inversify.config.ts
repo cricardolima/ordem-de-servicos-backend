@@ -2,9 +2,10 @@ import { Container } from "inversify";
 import { TYPES } from "@container/types";
 import { IUserLoginUseCase, UserLoginUseCase } from "@use-cases/UserLogin";
 import { IUserRepository, UserRepository } from "@repositories/UserRepository";
-import { AuthController } from "@controllers/auth.controller";
+import { AuthController, UserController } from "@controllers/index";
 import { IRefreshTokenRepository, RefreshTokenRepository } from "@repositories/RefreshTokenRepository";
 import { IRefreshTokenUseCase, RefreshTokenUseCase } from "@use-cases/RefreshToken";
+import { IGetUsersUseCase, GetUsersUseCase } from "@use-cases/GetUsers";
 
 export class ContainerApp {
     public init(): Container {
@@ -13,14 +14,14 @@ export class ContainerApp {
         // Bind dos Use Cases
         container.bind<IUserLoginUseCase>(TYPES.IUserLoginUseCase).to(UserLoginUseCase);
         container.bind<IRefreshTokenUseCase>(TYPES.IRefreshTokenUseCase).to(RefreshTokenUseCase);
-        
+        container.bind<IGetUsersUseCase>(TYPES.IGetUsersUseCase).to(GetUsersUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);
         
         // Bind dos Controllers
         container.bind(AuthController).toSelf().inSingletonScope();
-        
+        container.bind(UserController).toSelf().inSingletonScope();
         return container;
     }
 }
