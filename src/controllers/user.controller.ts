@@ -1,4 +1,4 @@
-import { controller, httpGet, httpPost, requestBody } from "inversify-express-utils";
+import { controller, httpGet, httpPost, requestBody, response } from "inversify-express-utils";
 import { AuthMiddleware } from "@middleware/auth.middleware";
 import { IGetUsersUseCase } from "@use-cases/GetUsers";
 import { inject } from "inversify";
@@ -8,6 +8,7 @@ import { ICreateUserUseCase } from "@use-cases/CreateUser";
 import { ICreateUserRequest } from "@dtos/models";
 import { ValidateMiddleware } from "@middleware/validate.middleware";
 import { createUserSchema } from "@validators/createUser.schema";
+import { Response } from "express";
 
 @controller("/users")
 export class UserController {
@@ -24,8 +25,9 @@ export class UserController {
         return this.getUsersUseCase.execute();
     }
 
-    @httpPost("/", ValidateMiddleware(createUserSchema))
-    public async createUser(@requestBody() body: ICreateUserRequest): Promise<User> {
-        return this.createUserUseCase.execute(body);
+    @httpPost("/", ValidateMiddleware(createUserSchema), AuthMiddleware)
+    public async createUser(@requestBody() body: ICreateUserRequest, @response() res: Response): Promise<Response> {
+        const user = await this.createUserUseCase.execute(body);
+        return res.status(201).json(user);
     }
 }

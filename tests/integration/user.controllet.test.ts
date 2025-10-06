@@ -13,7 +13,6 @@ describe("UserController", () => {
     let testContainer: Container;
     let inMemoryUserRepository: InMemoryUserRepositoryV2;
     let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
-    let testUser: User;
     let accessToken: string;
 
     async function createUser(overrides: Partial<User> = {}) {
@@ -42,7 +41,7 @@ describe("UserController", () => {
         (appInstance as any).container = testContainer;
         app = (appInstance as any).server.build();
 
-        testUser = await createUser();
+        await createUser();
 
         // realiza login para obter access token válido
         const loginResponse = await request(app).post("/auth/login").send({
@@ -65,6 +64,77 @@ describe("UserController", () => {
 
             expect(response.status).toBe(200);
             expect(response.body).toBeDefined();
+        });
+    });
+
+    describe("POST /users", () => {
+        it("should return 201 and create a user", async () => {
+            const response = await request(app).post("/users").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "Test User",
+                registration: "teste user",
+                password: "password123",
+                role: Role.ADMIN,
+            });
+            expect(response.status).toBe(201);
+            expect(response.body).toBeDefined();
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const response = await request(app).post("/users").send({
+                name: "Test User",
+                registration: "teste user",
+                password: "password123",
+                role: Role.ADMIN,
+            });
+
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 400 if the request is invalid", async () => {
+            const response = await request(app).post("/users").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "Test User",
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Dados inválidos",
+                    type: "validation_error",
+                    details: expect.any(Array)
+                }
+            });
+        });
+
+        it("should return 400 if the user already exists", async () => {
+            const response = await request(app).post("/users").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "Test User",
+                registration: "admin",
+                password: "password123",
+                role: Role.ADMIN,
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "User already exists",
+                    type: "business_error"
+                }
+            });
         });
     });
 });
