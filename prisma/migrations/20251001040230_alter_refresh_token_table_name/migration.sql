@@ -14,7 +14,7 @@ DROP TABLE "public"."RefreshToken";
 CREATE TABLE "public"."refresh_token" (
     "id" TEXT NOT NULL,
     "token" TEXT NOT NULL,
-    "expires_at" TIMESTAMP(3) NOT NULL,
+    "expires_at" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "revoked_at" TIMESTAMP(3),
     "user_id" TEXT NOT NULL,

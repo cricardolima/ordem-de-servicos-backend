@@ -7,6 +7,10 @@ import { NotFoundException } from "@exceptions/notFound.exception";
 @injectable()
 export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> implements IUserRepository {
     
+    public async findAll(): Promise<User[]> {
+        return this.items;
+    }
+
     public async findByRegistration(registration: string): Promise<User> {
         const user = this.findByProperty('registration', registration);
         

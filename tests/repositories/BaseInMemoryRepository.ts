@@ -41,7 +41,6 @@ export abstract class BaseInMemoryRepository<T> {
         property: K, 
         value: T[K]
     ): T | undefined {
-        console.log(property, value);
         return this.items.find(item => item[property] === value);
     }
 

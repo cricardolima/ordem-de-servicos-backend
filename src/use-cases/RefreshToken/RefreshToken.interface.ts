@@ -1,7 +1,8 @@
-import { RefreshToken } from "@prisma/client";
-
+import { RefreshToken, User } from "@prisma/client";
+import { Response } from "express";
 export interface IRefreshTokenUseCase {
-    generateRefreshToken(userId: string): Promise<RefreshToken>;
-    revokeRefreshToken(token: string): Promise<void>;
+    generateRefreshToken(user: User): Promise<RefreshToken>;
+    revokeRefreshToken(token: string, res: Response): Promise<void>;
     revokeAllUserTokens(userId: string): Promise<void>;
+    refreshToken(token: string): Promise<{ accessToken: string }>;
 }

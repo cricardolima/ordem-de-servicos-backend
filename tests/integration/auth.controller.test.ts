@@ -8,6 +8,7 @@ import { setupTestContainer } from "../utils/setupTestContainer";
 import { User, Role } from "@prisma/client";
 import { hash } from "bcrypt";
 import crypto from "crypto";
+import dayjs from "dayjs";
 
 describe("AuthController", () => {
     let app: Express;
@@ -28,22 +29,32 @@ describe("AuthController", () => {
     }
 
     async function createValidRefreshToken(userId: string) {
-        return await inMemoryRefreshTokenRepository.create({
-            token: crypto.randomBytes(32).toString("hex"),
+        const expiresAt = dayjs().add(1, 'day').unix().toString();
+        const rawToken = "refresh-token-1";
+        const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+        await inMemoryRefreshTokenRepository.create({
+            token: hashed,
             userId: userId,
-            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            expiresAt,
         });
+        return { rawToken };
     }
 
     async function createExpiredRefreshToken(userId: string) {
-        return await inMemoryRefreshTokenRepository.create({
-            token: crypto.randomBytes(32).toString("hex"),
+        const expiresAt = dayjs().subtract(1, 'day').unix().toString();
+        const rawToken = "refresh-token-2";
+        const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+        await inMemoryRefreshTokenRepository.create({
+            token: hashed,
             userId: userId,
-            expiresAt: new Date(Date.now() - 1000 * 60 * 60), // 1 hora atrás
+            expiresAt,
         });
+        return { rawToken };
     }
 
     beforeAll(async () => {
+        process.env.JWT_SECRET = 'test-access-secret';
+        process.env.REFRESH_JWT_SECRET = 'test-refresh-secret';
         inMemoryUserRepository = new InMemoryUserRepositoryV2();
         inMemoryRefreshTokenRepository = new InMemoryRefreshTokenRepository();
 
@@ -57,11 +68,6 @@ describe("AuthController", () => {
         app = (appInstance as any).server.build();
 
         testUser = await createUser();
-    });
-
-    afterEach(() => {
-        // Limpa apenas os refresh tokens após cada teste para evitar conflitos
-        inMemoryRefreshTokenRepository.clear();
     });
 
     afterAll(() => {
@@ -78,7 +84,10 @@ describe("AuthController", () => {
 
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty("accessToken");
-            expect(response.body).toHaveProperty("refreshToken");
+            const cookiesHeader = response.get('set-cookie');
+            const cookies = Array.isArray(cookiesHeader) ? cookiesHeader : [cookiesHeader].filter(Boolean);
+            expect(cookies.join(';')).toMatch(/refreshToken=/);
+            expect(cookies.join(';')).toMatch(/HttpOnly/);
         });
 
         it("should return 401 when password is incorrect", async () => {
@@ -154,11 +163,8 @@ describe("AuthController", () => {
 
     describe("POST /auth/logout", () => {
         it("should return 200 when logging out successfully", async () => {
-            const refreshToken = await createValidRefreshToken(testUser.id);
-            
-            const response = await request(app).post("/auth/logout").send({
-                refreshToken: refreshToken.token
-            });
+            const { rawToken } = await createValidRefreshToken(testUser.id);
+            const response = await request(app).post("/auth/logout").set("Cookie", [`refreshToken=${rawToken}`]);
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
@@ -166,33 +172,26 @@ describe("AuthController", () => {
                 message: "Logout successful"
             });
 
-            const revokedRefreshToken = await inMemoryRefreshTokenRepository.findByToken(refreshToken.token);
+            const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+            const revokedRefreshToken = await inMemoryRefreshTokenRepository.findByToken(hashed);
             expect(revokedRefreshToken?.revokedAt).not.toBeNull();
         });
 
         it("should return 400 when refresh token is not provided", async () => {
-            const response = await request(app).post("/auth/logout").send({
-                refreshToken: ""
-            });
+            const response = await request(app).post("/auth/logout");
 
             expect(response.status).toBe(400);
             expect(response.body).toEqual({
                 success: false,
                 error: {
                     message: expect.any(String),
-                    type: "validation_error",
-                    details: [{
-                        field: expect.any(String),
-                        message: expect.any(String)
-                    }]
+                    type: "business_error",
                 }
             });
         });
 
         it("should return 404 when refresh token is not found", async () => {
-            const response = await request(app).post("/auth/logout").send({
-                refreshToken: "invalid-refresh-token"
-            });
+            const response = await request(app).post("/auth/logout").set("Cookie", ["refreshToken=invalid-refresh-token"]);
 
             expect(response.status).toBe(404);
             expect(response.body).toEqual({

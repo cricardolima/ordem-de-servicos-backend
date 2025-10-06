@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { IRefreshTokenRepository } from "@repositories/RefreshTokenRepository/refreshToken.repository.interface";
 import { RefreshToken } from "@prisma/client";
 import { CreateRefreshTokenDto } from "@dtos/models";
+import dayjs from "dayjs";
 
 @injectable()
 export class InMemoryRefreshTokenRepository implements IRefreshTokenRepository {
@@ -68,7 +69,7 @@ export class InMemoryRefreshTokenRepository implements IRefreshTokenRepository {
     }
     
     public async findValidByUserId(userId: string): Promise<RefreshToken[]> {
-        const now = new Date();
+        const now = dayjs().unix().toString();
         return this.refreshTokens.filter(rt => 
             rt.userId === userId && 
             !rt.revokedAt && 

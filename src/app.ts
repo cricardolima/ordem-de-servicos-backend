@@ -7,6 +7,7 @@ import cors from "cors";
 import { errorHandlerMiddleware } from "@middleware/errorHandler.middleware";
 import logger from "@utils/logger";
 import { setupProcessHandlers } from "@utils/processHandlers";
+import cookieParser from "cookie-parser";
 
 export class App {
     private readonly server: InversifyExpressServer;
@@ -23,6 +24,7 @@ export class App {
             // Middleware para parsing de JSON
             app.use(express.json());
             app.use(express.urlencoded({ extended: true }));
+            app.use(cookieParser());
             
             // Middleware para CORS
             app.use(cors({

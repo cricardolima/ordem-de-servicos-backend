@@ -21,7 +21,6 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         const refreshToken = await prisma.refreshToken.findFirst({
             where: {
                 token,
-                revokedAt: null,
             },
         });
         return refreshToken || null;

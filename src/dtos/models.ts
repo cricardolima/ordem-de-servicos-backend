@@ -8,7 +8,7 @@ export interface ISession {
 export interface CreateRefreshTokenDto {
     token: string;
     userId: string;
-    expiresAt: Date;
+    expiresAt: string;
 }
 
 export interface IUserLoginRequest {
@@ -18,7 +18,6 @@ export interface IUserLoginRequest {
 
 export interface IUserLoginResponse {
     accessToken: string;
-    refreshToken: string;
 }
 
 export interface IRefreshTokenRequestDto {
