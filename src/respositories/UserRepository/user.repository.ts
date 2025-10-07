@@ -36,7 +36,15 @@ export class UserRepository implements IUserRepository {
     public async findById(userId: string): Promise<User | null> {
         return await prisma.user.findUnique({
             where: { id: userId, deletedAt: null },
-        }) || null;
+            include: {
+                createdProfessionals: true,
+                updatedProfessionals: true,
+                deletedProfessionals: true,
+                createdInvoices: true,
+                updatedInvoices: true,
+                deletedInvoices: true,
+            },
+        }) ?? null;
     }
 
     public async softDelete(userId: string): Promise<void> {

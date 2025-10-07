@@ -14,6 +14,7 @@ describe("UserController", () => {
     let inMemoryUserRepository: InMemoryUserRepositoryV2;
     let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
     let accessToken: string;
+    let user: User;
 
     async function createUser(overrides: Partial<User> = {}) {
         const defaultUser = {
@@ -41,8 +42,7 @@ describe("UserController", () => {
         (appInstance as any).container = testContainer;
         app = (appInstance as any).server.build();
 
-        await createUser();
-
+        user = await createUser();
         // realiza login para obter access token válido
         const loginResponse = await request(app).post("/auth/login").send({
             registration: "admin",
@@ -54,6 +54,8 @@ describe("UserController", () => {
     afterAll(() => {
         inMemoryUserRepository.clear();
         inMemoryRefreshTokenRepository.clear();
+
+        jest.clearAllMocks();
     });
 
     describe("GET /users", () => {
@@ -218,6 +220,36 @@ describe("UserController", () => {
                 error: {
                     message: "User not found",
                     type: "not_found_error"
+                }
+            });
+        });
+    });
+
+    describe("GET /users/:id", () => {
+        it("should return 200 and get a user by id", async () => {
+            const response = await request(app).get(`/users/${user.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+            expect(response.status).toBe(200);
+            expect(response.body).toBeDefined();
+            expect(response.body.id).toBe(user.id);
+            expect(response.body.name).toBe(user.name);
+            expect(response.body.registration).toBe(user.registration);
+            expect(response.body.role).toBe(user.role);
+            expect(response.body.password).toBeDefined();
+            expect(response.body.createdAt).toBeDefined();
+            expect(response.body.updatedAt).toBeDefined();
+            expect(response.body.deletedAt).toBeNull();
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const response = await request(app).get(`/users/${user.id}`);
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
                 }
             });
         });

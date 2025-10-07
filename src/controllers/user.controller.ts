@@ -12,6 +12,7 @@ import { Response } from "express";
 import { IUpdateUserUseCase } from "@use-cases/UpdateUser";
 import { updateUserSchema } from "@validators/updateUser.schema";
 import { IDeleteUserUseCase } from "@use-cases/DeleteUser";
+import { IGetUserByIdUseCase } from "@use-cases/GetUserById";
 
 @controller("/users")
 export class UserController {
@@ -19,17 +20,30 @@ export class UserController {
     private readonly createUserUseCase: ICreateUserUseCase;
     private readonly updateUserUseCase: IUpdateUserUseCase;
     private readonly deleteUserUseCase: IDeleteUserUseCase;
+    private readonly getUserByIdUseCase: IGetUserByIdUseCase;
 
-    constructor(@inject(TYPES.IGetUsersUseCase) getUsersUseCase: IGetUsersUseCase, @inject(TYPES.ICreateUserUseCase) createUserUseCase: ICreateUserUseCase, @inject(TYPES.IUpdateUserUseCase) updateUserUseCase: IUpdateUserUseCase, @inject(TYPES.IDeleteUserUseCase) deleteUserUseCase: IDeleteUserUseCase) {
-        this.getUsersUseCase = getUsersUseCase;
-        this.createUserUseCase = createUserUseCase;
-        this.updateUserUseCase = updateUserUseCase;
-        this.deleteUserUseCase = deleteUserUseCase;
+    constructor(
+        @inject(TYPES.IGetUsersUseCase) getUsersUseCase: IGetUsersUseCase, 
+        @inject(TYPES.ICreateUserUseCase) createUserUseCase: ICreateUserUseCase, 
+        @inject(TYPES.IUpdateUserUseCase) updateUserUseCase: IUpdateUserUseCase, 
+        @inject(TYPES.IDeleteUserUseCase) deleteUserUseCase: IDeleteUserUseCase, 
+        @inject(TYPES.IGetUserByIdUseCase) getUserByIdUseCase: IGetUserByIdUseCase
+    ) {
+            this.getUsersUseCase = getUsersUseCase;
+            this.createUserUseCase = createUserUseCase;
+            this.updateUserUseCase = updateUserUseCase;
+            this.deleteUserUseCase = deleteUserUseCase;
+            this.getUserByIdUseCase = getUserByIdUseCase;
     }
 
     @httpGet("/", AuthMiddleware)
     public async getUsers(): Promise<User[]> {
         return this.getUsersUseCase.execute();
+    }
+
+    @httpGet("/:id", AuthMiddleware)
+    public async getUser(@requestParam("id") id: string): Promise<User> {
+        return this.getUserByIdUseCase.execute(id);
     }
 
     @httpPost("/", ValidateMiddleware(createUserSchema), AuthMiddleware)

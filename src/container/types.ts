@@ -9,4 +9,5 @@ export const TYPES = {
     ICreateUserUseCase: "ICreateUserUseCase",
     IUpdateUserUseCase: "IUpdateUserUseCase",
     IDeleteUserUseCase: "IDeleteUserUseCase",
+    IGetUserByIdUseCase: "IGetUserByIdUseCase",
 };
