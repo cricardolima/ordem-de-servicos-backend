@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IUserRepository } from "./user.respository.interface";
 import prisma from "@lib/prisma";
 import { User } from "@prisma/client";
-import { ICreateUserRequest } from "@dtos/models";
+import { ICreateUserRequest, IUpdateUserRequest } from "@dtos/models";
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -24,5 +24,18 @@ export class UserRepository implements IUserRepository {
         return await prisma.user.create({
             data: user,
         });
+    }
+
+    public async update(userId: string, data: IUpdateUserRequest): Promise<void> {
+        await prisma.user.update({
+            where: { id: userId },
+            data: data,
+        });
+    }
+
+    public async findById(userId: string): Promise<User | null> {
+        return await prisma.user.findUnique({
+            where: { id: userId },
+        }) || null;
     }
 }

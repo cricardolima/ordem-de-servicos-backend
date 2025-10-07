@@ -37,3 +37,10 @@ export interface ICreateUserRequest {
     password: string;
     role: Role;
 }
+
+export interface IUpdateUserRequest {
+    name?: string;
+    registration?: string;
+    password?: string;
+    role?: Role;
+}

@@ -7,4 +7,5 @@ export const TYPES = {
     IRefreshTokenUseCase: "IRefreshTokenUseCase",
     IGetUsersUseCase: "IGetUsersUseCase",
     ICreateUserUseCase: "ICreateUserUseCase",
+    IUpdateUserUseCase: "IUpdateUserUseCase",
 };

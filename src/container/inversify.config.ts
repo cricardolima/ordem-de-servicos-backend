@@ -7,6 +7,7 @@ import { IRefreshTokenRepository, RefreshTokenRepository } from "@repositories/R
 import { IRefreshTokenUseCase, RefreshTokenUseCase } from "@use-cases/RefreshToken";
 import { IGetUsersUseCase, GetUsersUseCase } from "@use-cases/GetUsers";
 import { ICreateUserUseCase, CreateUserUseCase } from "@use-cases/CreateUser";
+import { IUpdateUserUseCase, UpdateUserUseCase } from "@use-cases/UpdateUser";
 
 export class ContainerApp {
     public init(): Container {
@@ -17,6 +18,7 @@ export class ContainerApp {
         container.bind<IRefreshTokenUseCase>(TYPES.IRefreshTokenUseCase).to(RefreshTokenUseCase);
         container.bind<IGetUsersUseCase>(TYPES.IGetUsersUseCase).to(GetUsersUseCase);
         container.bind<ICreateUserUseCase>(TYPES.ICreateUserUseCase).to(CreateUserUseCase);
+        container.bind<IUpdateUserUseCase>(TYPES.IUpdateUserUseCase).to(UpdateUserUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);

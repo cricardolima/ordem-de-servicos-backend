@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IUserRepository } from "@repositories/UserRepository/user.respository.interface";
 import { User, Role } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
-import { ICreateUserRequest } from "@dtos/models";
+import { ICreateUserRequest, IUpdateUserRequest } from "@dtos/models";
 
 @injectable()
 export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> implements IUserRepository {
@@ -97,5 +97,9 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
 
     public async create(user: ICreateUserRequest): Promise<User> {
         return this.createTestUser(user);
+    }
+
+    public async update(userId: string, data: IUpdateUserRequest): Promise<void> {
+        this.updateByProperty('id', userId, data);
     }
 }

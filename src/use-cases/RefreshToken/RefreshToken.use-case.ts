@@ -71,7 +71,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
         await this.refreshTokenRepository.revokeAllByUserId(userId);
     }
 
-    public async refreshToken(token: string): Promise<{ accessToken: string }> {
+    public async refreshToken(token: string, res: Response): Promise<{ accessToken: string }> {
         const accessTokenExpiration: SignOptions["expiresIn"] = process.env.ACCESS_TOKEN_EXPIRATION as SignOptions["expiresIn"] || "5m";
         
         if (!token) {
@@ -85,17 +85,25 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
             throw new UnauthorizedException("Refresh token invalid or revoked");
         }
 
-        const isTokenExpired = dayjs(refreshToken.expiresAt).isAfter(dayjs());
+        const isTokenExpired = dayjs.unix(parseInt(refreshToken.expiresAt)).isBefore(dayjs());
 
         if (isTokenExpired) {
             throw new BusinessException("Refresh token expired");
         }
 
+        await this.refreshTokenRepository.revokeByToken(hashedToken);
+
         try {
             const decoded = jwt.verify(token, this.jwtSecret) as { userId: string, role: Role } & User;
-
             const newAccessToken = jwt.sign({ userId: decoded.userId, role: decoded.role }, this.jwtSecret, { expiresIn: accessTokenExpiration });
-            await this.generateRefreshToken(decoded);
+            const newRefreshToken = await this.generateRefreshToken({ ...decoded, id: decoded.userId });
+
+            res.cookie("refreshToken", newRefreshToken.token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
+            });
 
             return {
                 accessToken: newAccessToken,

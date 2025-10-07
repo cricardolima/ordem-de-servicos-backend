@@ -33,7 +33,7 @@ export class AuthController {
     }
 
     @httpPost("/refresh-token")
-    public async refreshToken(@request() req: Request) {
-        return this.refreshTokenUseCase.refreshToken(req.cookies.refreshToken);
+    public async refreshToken(@request() req: Request, @response() res: Response) {
+        return this.refreshTokenUseCase.refreshToken(req.cookies.refreshToken, res);
     }
 }
