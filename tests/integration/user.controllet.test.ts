@@ -137,4 +137,89 @@ describe("UserController", () => {
             });
         });
     });
+
+    describe("DELETE /users/:id", () => {
+        it("should return 200 and delete a user", async () => {
+            const user = await createUser();
+            const response = await request(app).delete(`/users/${user.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                success: true,
+                message: "User deleted successfully"
+            });
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const user = await createUser();
+            const response = await request(app).delete(`/users/${user.id}`);
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the user does not exist or is already deleted", async () => {
+            const response = await request(app).delete(`/users/non-existent-user-id`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "User not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+    });
+
+    describe("PATCH /users/:id", () => {
+        it("should return 200 and update a user", async () => {
+            const user = await createUser();
+            const response = await request(app).patch(`/users/${user.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "Updated User"
+            });
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                success: true,
+                message: "User updated successfully"
+            });
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const user = await createUser();
+            const response = await request(app).patch(`/users/${user.id}`);
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the user does not exist or is already deleted", async () => {
+            const response = await request(app).patch(`/users/non-existent-user-id`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "User not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+    });
 });
