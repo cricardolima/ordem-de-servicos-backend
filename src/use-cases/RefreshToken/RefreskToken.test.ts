@@ -31,6 +31,7 @@ describe('RefreshTokenUseCase', () => {
 
     beforeEach(async () => {
         process.env.REFRESH_JWT_SECRET = 'test-secret';
+        process.env.JWT_SECRET = 'test-secret-access';
         process.env.ACCESS_TOKEN_EXPIRATION = '5m';
         container = new ContainerApp().init();
         container.unbind(TYPES.IRefreshTokenRepository);
@@ -99,7 +100,7 @@ describe('RefreshTokenUseCase', () => {
         expect(refreshed.accessToken).toEqual(expect.any(String));
         
         // Verificar se o novo access token é válido
-        const decoded = jwt.verify(refreshed.accessToken, 'test-secret') as any;
+        const decoded = jwt.verify(refreshed.accessToken, 'test-secret-access') as any;
         expect(decoded.userId).toBe(user.id);
         expect(decoded.role).toBe(user.role);
         

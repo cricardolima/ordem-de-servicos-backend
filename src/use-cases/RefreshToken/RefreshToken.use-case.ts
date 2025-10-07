@@ -15,11 +15,13 @@ import { UnauthorizedException } from "@exceptions/unauthorized.exception";
 @injectable()
 export class RefreshTokenUseCase implements IRefreshTokenUseCase {
     private readonly refreshTokenRepository: IRefreshTokenRepository;
-    private readonly jwtSecret: string;
+    private readonly refreshJwtSecret: string;
+    private readonly accessJwtSecret: string;
 
     constructor(@inject(TYPES.IRefreshTokenRepository) refreshTokenRepository: IRefreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtSecret = process.env.REFRESH_JWT_SECRET as string;
+        this.refreshJwtSecret = process.env.REFRESH_JWT_SECRET as string;
+        this.accessJwtSecret = process.env.JWT_SECRET as string;
     }
 
 
@@ -31,10 +33,10 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
         const expiresAt = dayjs().add(1, 'day').unix();
         const expiresIn: SignOptions["expiresIn"] = process.env.REFRESH_JWT_EXPIRES_IN as SignOptions["expiresIn"] || "1d";
         
-        if (!this.jwtSecret) {
+        if (!this.refreshJwtSecret) {
             throw new BusinessException("REFRESH_JWT_SECRET not found");
         }
-        const token = jwt.sign({ userId: user.id, role: user.role }, this.jwtSecret, { expiresIn });
+        const token = jwt.sign({ userId: user.id, role: user.role }, this.refreshJwtSecret, { expiresIn });
 
         const hashedToken = await this.hashToken(token);
 
@@ -94,8 +96,8 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
         await this.refreshTokenRepository.revokeByToken(hashedToken);
 
         try {
-            const decoded = jwt.verify(token, this.jwtSecret) as { userId: string, role: Role } & User;
-            const newAccessToken = jwt.sign({ userId: decoded.userId, role: decoded.role }, this.jwtSecret, { expiresIn: accessTokenExpiration });
+            const decoded = jwt.verify(token, this.refreshJwtSecret) as { userId: string, role: Role } & User;
+            const newAccessToken = jwt.sign({ userId: decoded.userId, role: decoded.role }, this.accessJwtSecret, { expiresIn: accessTokenExpiration });
             const newRefreshToken = await this.generateRefreshToken({ ...decoded, id: decoded.userId });
 
             res.cookie("refreshToken", newRefreshToken.token, {

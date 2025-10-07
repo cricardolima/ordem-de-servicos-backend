@@ -7,4 +7,5 @@ export interface IUserRepository {
     create(user: ICreateUserRequest): Promise<User>;
     update(userId: string, data: IUpdateUserRequest): Promise<void>;
     findById(userId: string): Promise<User | null>;
+    softDelete(userId: string): Promise<void>;
 }

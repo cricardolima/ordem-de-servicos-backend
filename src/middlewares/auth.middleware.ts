@@ -14,6 +14,7 @@ interface DecodedToken {
 export const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const jwtSecret = process.env.JWT_SECRET as string;
+    console.log(jwtSecret);
 
     if (!jwtSecret) {
         throw new BusinessException('JWT_SECRET not found');
@@ -29,7 +30,9 @@ export const AuthMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 
     try {
+        console.log(token);
         const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
+        console.log(decoded);
         req.session = {...req.session, userId: decoded.userId, role: decoded.role};
         next();
     } catch (error) {

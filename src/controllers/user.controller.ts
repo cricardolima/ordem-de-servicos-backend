@@ -1,4 +1,4 @@
-import { controller, httpGet, httpPost, requestBody, response, httpPatch, requestParam } from "inversify-express-utils";
+import { controller, httpGet, httpPost, requestBody, response, httpPatch, requestParam, httpDelete } from "inversify-express-utils";
 import { AuthMiddleware } from "@middleware/auth.middleware";
 import { IGetUsersUseCase } from "@use-cases/GetUsers";
 import { inject } from "inversify";
@@ -11,17 +11,20 @@ import { createUserSchema } from "@validators/createUser.schema";
 import { Response } from "express";
 import { IUpdateUserUseCase } from "@use-cases/UpdateUser";
 import { updateUserSchema } from "@validators/updateUser.schema";
+import { IDeleteUserUseCase } from "@use-cases/DeleteUser";
 
 @controller("/users")
 export class UserController {
     private readonly getUsersUseCase: IGetUsersUseCase;
     private readonly createUserUseCase: ICreateUserUseCase;
     private readonly updateUserUseCase: IUpdateUserUseCase;
+    private readonly deleteUserUseCase: IDeleteUserUseCase;
 
-    constructor(@inject(TYPES.IGetUsersUseCase) getUsersUseCase: IGetUsersUseCase, @inject(TYPES.ICreateUserUseCase) createUserUseCase: ICreateUserUseCase, @inject(TYPES.IUpdateUserUseCase) updateUserUseCase: IUpdateUserUseCase) {
+    constructor(@inject(TYPES.IGetUsersUseCase) getUsersUseCase: IGetUsersUseCase, @inject(TYPES.ICreateUserUseCase) createUserUseCase: ICreateUserUseCase, @inject(TYPES.IUpdateUserUseCase) updateUserUseCase: IUpdateUserUseCase, @inject(TYPES.IDeleteUserUseCase) deleteUserUseCase: IDeleteUserUseCase) {
         this.getUsersUseCase = getUsersUseCase;
         this.createUserUseCase = createUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
+        this.deleteUserUseCase = deleteUserUseCase;
     }
 
     @httpGet("/", AuthMiddleware)
@@ -39,5 +42,11 @@ export class UserController {
     public async updateUser(@requestParam("id") id: string, @requestBody() body: IUpdateUserRequest, @response() res: Response): Promise<Response> {
         await this.updateUserUseCase.execute(id, body);
         return res.status(200).json({ success: true, message: "User updated successfully" });
+    }
+
+    @httpDelete("/:id", AuthMiddleware)
+    public async deleteUser(@requestParam("id") id: string, @response() res: Response): Promise<Response> {
+        await this.deleteUserUseCase.execute(id);
+        return res.status(200).json({ success: true, message: "User deleted successfully" });
     }
 }

@@ -17,7 +17,7 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
 
     
     public async findById(id: string): Promise<User | null> {
-        return this.findByProperty('id', id) || null;
+        return this.findByProperty('id', id) && this.findByProperty('deletedAt', null) || null;
     }
 
     
@@ -28,6 +28,10 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
     
     public async existsByRegistration(registration: string): Promise<boolean> {
         return this.findByProperty('registration', registration) !== undefined;
+    }
+
+    public async findByIdAndDeletedAtNull(id: string): Promise<User | null> {
+        return this.findByProperty('id', id) && this.findByProperty('deletedAt', null) || null;
     }
 
     
@@ -82,8 +86,8 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
     }
 
     
-    public async softDelete(id: string): Promise<boolean> {
-        return this.updateByProperty('id', id, { 
+    public async softDelete(id: string): Promise<void> {
+        this.updateByProperty('id', id, { 
             deletedAt: new Date() 
         });
     }
