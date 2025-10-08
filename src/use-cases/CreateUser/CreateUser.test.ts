@@ -27,10 +27,6 @@ describe("CreateUserUseCase", () => {
             password: await hashPassword("password123"),
         });
     })
-
-    afterEach(() => {
-        inMemoryUserRepository.clear();
-    })
     
     it("should be defined", () => {
         expect(CreateUserUseCase).toBeDefined();

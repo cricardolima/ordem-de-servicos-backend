@@ -1,5 +1,14 @@
 import winston from "winston";
 
+const transports = [
+    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+    new winston.transports.File({ filename: "logs/combined.log" }),
+];
+
+if (process.env.NODE_ENV !== "test") {
+    transports.push(new winston.transports.Console() as any);
+}
+
 const logger = winston.createLogger({
     level: process.env.NODE_ENV === "development" ? "debug" : "info",
     format: winston.format.combine(
@@ -11,14 +20,10 @@ const logger = winston.createLogger({
     defaultMeta: {
         service: "ordens-de-servico-api",
     },
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-        new winston.transports.File({ filename: "logs/combined.log" }),
-    ]
+    transports
 });
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
     logger.add(new winston.transports.Console({
         format: winston.format.simple(),
     }));

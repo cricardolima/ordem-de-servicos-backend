@@ -3,6 +3,16 @@ import { Request, Response } from "express";
 import { ForbiddenException } from "@exceptions/forbidden.exception";
 
 describe("HasAccessMiddleware", () => {
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
+    });
+
     it("should be defined", () => {
         expect(hasAccess).toBeDefined();
     });

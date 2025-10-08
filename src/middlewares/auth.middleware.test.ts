@@ -9,9 +9,11 @@ describe('AuthMiddleware', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
     let next: jest.Mock;
+    let consoleErrorSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jwtSecret = process.env.JWT_SECRET as string;
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
         req = {
             headers: {},
             session: {}
@@ -21,6 +23,10 @@ describe('AuthMiddleware', () => {
             json: jest.fn()
         };
         next = jest.fn();
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
     });
 
     it('should be defined', () => {

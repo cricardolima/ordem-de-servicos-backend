@@ -16,6 +16,7 @@ describe("AuthController", () => {
     let inMemoryUserRepository: InMemoryUserRepositoryV2;
     let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
     let testUser: User;
+    let consoleErrorSpy: jest.SpyInstance;
 
     async function createUser(overrides: Partial<User> = {}) {
         const defaultUser = {
@@ -53,8 +54,6 @@ describe("AuthController", () => {
     }
 
     beforeAll(async () => {
-        process.env.JWT_SECRET = 'test-access-secret';
-        process.env.REFRESH_JWT_SECRET = 'test-refresh-secret';
         inMemoryUserRepository = new InMemoryUserRepositoryV2();
         inMemoryRefreshTokenRepository = new InMemoryRefreshTokenRepository();
 
@@ -68,6 +67,14 @@ describe("AuthController", () => {
         app = (appInstance as any).server.build();
 
         testUser = await createUser();
+    });
+
+    beforeEach(() => {
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
     });
 
     afterAll(() => {

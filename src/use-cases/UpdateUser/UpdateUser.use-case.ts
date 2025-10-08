@@ -15,7 +15,6 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
     }
 
     public async execute(userId: string, data: IUpdateUserRequest): Promise<void> {
-        console.log(userId, data);
         let passwordHash: string | undefined;
         const user = await this.userRepository.findById(userId);
         if (!user) {
@@ -29,7 +28,6 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
         const userToUpdate = Object.assign(user, { ...data, password: passwordHash || user.password });
 
         userToUpdate.updatedAt = new Date();
-        console.log(userToUpdate);
         await this.userRepository.update(userId, userToUpdate);
     }
 }

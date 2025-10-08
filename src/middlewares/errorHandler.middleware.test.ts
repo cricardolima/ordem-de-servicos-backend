@@ -9,12 +9,14 @@ describe('ErrorHandlerMiddleware', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
     let next: jest.Mock;
+    let consoleErrorSpy: jest.SpyInstance;
     
     it('should be defined', () => {
         expect(errorHandlerMiddleware).toBeDefined();
     });
 
     beforeEach(() => {
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
         req = {
             url: '/test',
             method: 'POST',
@@ -28,6 +30,7 @@ describe('ErrorHandlerMiddleware', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        consoleErrorSpy.mockRestore();
     });
 
     it('should handle a ValidationException with empty fields', () => {

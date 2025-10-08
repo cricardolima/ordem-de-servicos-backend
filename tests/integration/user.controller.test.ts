@@ -15,6 +15,7 @@ describe("UserController", () => {
     let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
     let accessToken: string;
     let user: User;
+    let consoleErrorSpy: jest.SpyInstance;
 
     async function createUser(overrides: Partial<User> = {}) {
         const defaultUser = {
@@ -28,8 +29,6 @@ describe("UserController", () => {
     }
 
     beforeAll(async () => {
-        process.env.JWT_SECRET = 'test-access-secret';
-        process.env.REFRESH_JWT_SECRET = 'test-refresh-secret';
         inMemoryUserRepository = new InMemoryUserRepositoryV2();
         inMemoryRefreshTokenRepository = new InMemoryRefreshTokenRepository();
 
@@ -51,10 +50,17 @@ describe("UserController", () => {
         accessToken = loginResponse.body.accessToken;
     });
 
+    beforeEach(() => {
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
+    });
+
     afterAll(() => {
         inMemoryUserRepository.clear();
         inMemoryRefreshTokenRepository.clear();
-
         jest.clearAllMocks();
     });
 

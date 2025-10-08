@@ -39,10 +39,6 @@ describe('UserLoginUseCase', () => {
         });
     });
 
-    afterEach(() => {
-        inMemoryUserRepository.clear();
-    });
-
     it('should be defined', () => {
         expect(UserLoginUseCase).toBeDefined();
     });

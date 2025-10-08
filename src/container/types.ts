@@ -3,6 +3,7 @@ export const TYPES = {
     IUserLoginUseCase: "IUserLoginUseCase",
     IUserRepository: "IUserRepository",
     IRefreshTokenRepository: "IRefreshTokenRepository",
+    IServicesTypeRepository: "IServicesTypeRepository",
     IGenerateRefreshTokenUseCase: "IGenerateRefreshTokenUseCase",
     IRefreshTokenUseCase: "IRefreshTokenUseCase",
     IGetUsersUseCase: "IGetUsersUseCase",
@@ -10,4 +11,5 @@ export const TYPES = {
     IUpdateUserUseCase: "IUpdateUserUseCase",
     IDeleteUserUseCase: "IDeleteUserUseCase",
     IGetUserByIdUseCase: "IGetUserByIdUseCase",
+    IGetServicesTypeUseCase: "IGetServicesTypeUseCase",
 };
