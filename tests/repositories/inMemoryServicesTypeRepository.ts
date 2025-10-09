@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { IServicesTypeRepository } from "../../src/respositories/ServicesTypeRepository/servicesType.repository.interface";
 import { ServicesType } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
+import { ICreateServicesTypeRequest } from "@dtos/models";
 
 @injectable()
 export class InMemoryServicesTypeRepository extends BaseInMemoryRepository<ServicesType> implements IServicesTypeRepository {
@@ -13,5 +14,29 @@ export class InMemoryServicesTypeRepository extends BaseInMemoryRepository<Servi
 
     public findAll(): Promise<ServicesType[]> {
         return Promise.resolve(this.servicesTypes);
+    }
+
+    public create(servicesType: ICreateServicesTypeRequest): Promise<ServicesType> {
+        const newServicesType = { ...servicesType, id: this.generateId(), createdAt: new Date(), updatedAt: null, deletedAt: null };
+        this.addItem(newServicesType);
+        return Promise.resolve(newServicesType);
+    }
+
+    public createTestServicesType(overrides: Partial<ServicesType> = {}): ServicesType {
+        const defaultServicesType: ServicesType = {
+            id: this.generateId(),
+            serviceName: "Test Service",
+            serviceCode: "TEST",
+            createdAt: new Date(),
+            updatedAt: null,
+            deletedAt: null,
+            ...overrides
+        };
+        this.addItem(defaultServicesType);
+        return defaultServicesType;
+    }
+
+    public async findByServiceCode(serviceCode: string): Promise<ServicesType | null> {
+        return this.findByProperty('serviceCode', serviceCode) || null;
     }
 }

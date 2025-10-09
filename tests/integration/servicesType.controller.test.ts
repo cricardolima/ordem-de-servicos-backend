@@ -1,6 +1,6 @@
 import { Express } from "express";
 import { Container } from "inversify";
-import { InMemoryServicesTypeRepository } from "../repositories/inMemoryServicesTypeRepository";
+import { InMemoryServicesTypeRepository } from "../repositories/InMemoryServicesTypeRepository";
 import { setupTestContainer } from "../utils/setupTestContainer";
 import { App } from "../../src/app";
 import request from "supertest";
@@ -33,7 +33,7 @@ describe("ServicesTypeController", () => {
         app = (appInstance as any).server.build();
 
         await createUser(inMemoryUserRepository);
-        // realiza login para obter access token válido
+
         const loginResponse = await request(app).post("/auth/login").send({
             registration: "admin",
             password: "admin"
@@ -77,6 +77,69 @@ describe("ServicesTypeController", () => {
                 error: {
                     message: "Token not found",
                     type: "unauthorized_error"
+                }
+            });
+        });
+    });
+
+    describe("POST /services-type", () => {
+        it("should return 201 and a new services type", async () => {
+            const response = await request(app).post("/services-type").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                serviceName: "Test Service",
+                serviceCode: "TEST03",
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toBeDefined();
+        });
+
+        it("should return 401 if no access token is provided", async () => {
+            const response = await request(app).post("/services-type");
+
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 400 if the request is invalid", async () => {
+            const response = await request(app).post("/services-type").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                serviceName: "Test Service",
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Dados inválidos",
+                    type: "validation_error",
+                    details: expect.any(Array)
+                }
+            });
+        });
+
+        it("should return 400 if the services type already exists", async () => {
+            const response = await request(app).post("/services-type").set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                serviceName: "Test Service",
+                serviceCode: "TEST03",
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Services type already exists",
+                    type: "business_error"
                 }
             });
         });

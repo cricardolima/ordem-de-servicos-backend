@@ -12,6 +12,7 @@ import { IDeleteUserUseCase, DeleteUserUseCase } from "@use-cases/DeleteUser";
 import { IGetUserByIdUseCase, GetUserByIdUseCase } from "@use-cases/GetUserById";
 import { IServicesTypeRepository, ServicesTypeRepository } from "@repositories/ServicesTypeRepository";
 import { IGetServicesTypeUseCase, GetServicesTypeUseCase } from "@use-cases/GetServicesType";
+import { ICreateServicesTypeUseCase, CreateServicesTypeUseCase } from "@use-cases/CreateServicesType";
 
 export class ContainerApp {
     public init(): Container {
@@ -26,6 +27,7 @@ export class ContainerApp {
         container.bind<IDeleteUserUseCase>(TYPES.IDeleteUserUseCase).to(DeleteUserUseCase);
         container.bind<IGetUserByIdUseCase>(TYPES.IGetUserByIdUseCase).to(GetUserByIdUseCase);
         container.bind<IGetServicesTypeUseCase>(TYPES.IGetServicesTypeUseCase).to(GetServicesTypeUseCase);
+        container.bind<ICreateServicesTypeUseCase>(TYPES.ICreateServicesTypeUseCase).to(CreateServicesTypeUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);

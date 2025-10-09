@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Role, ServicesType } from "@prisma/client";
 
 export interface ISession {
     userId: string;
@@ -44,3 +44,5 @@ export interface IUpdateUserRequest {
     password?: string;
     role?: Role;
 }
+
+export interface ICreateServicesTypeRequest extends Omit<ServicesType, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
