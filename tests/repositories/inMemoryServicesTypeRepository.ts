@@ -37,7 +37,8 @@ export class InMemoryServicesTypeRepository extends BaseInMemoryRepository<Servi
     }
 
     public async findByServiceCode(serviceCode: string): Promise<ServicesType | null> {
-        return this.findByProperty('serviceCode', serviceCode) || null;
+        const servicesType = this.findByProperty('serviceCode', serviceCode) || null;
+        return servicesType || null;
     }
 
     public async deleteFromId(id: string): Promise<void> {
