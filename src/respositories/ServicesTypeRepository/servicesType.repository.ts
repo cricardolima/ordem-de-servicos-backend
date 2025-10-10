@@ -21,4 +21,16 @@ export class ServicesTypeRepository implements IServicesTypeRepository {
             where: { serviceCode, deletedAt: null },
         });
     }
+
+    public async deleteFromId(id: string): Promise<void> {
+        await prisma.servicesType.delete({
+            where: { id },
+        });
+    }
+
+    public async findById(id: string): Promise<ServicesType | null> {
+        return await prisma.servicesType.findUnique({
+            where: { id, deletedAt: null },
+        });
+    }
 }

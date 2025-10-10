@@ -7,6 +7,7 @@ import request from "supertest";
 import { InMemoryUserRepositoryV2 } from "../repositories/InMemoryUserRepositoryV2";
 import { InMemoryRefreshTokenRepository } from "../repositories/InMemoryRefreshTokenRepository";
 import createUser from "../utils/createUser";
+import { ServicesType } from "@prisma/client";
 
 describe("ServicesTypeController", () => {
     let app: Express;
@@ -16,6 +17,7 @@ describe("ServicesTypeController", () => {
     let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
     let accessToken: string;
     let consoleErrorSpy: jest.SpyInstance;
+    let servicesType: ServicesType;
 
     beforeAll(async () => {
         inMemoryServicesTypeRepository = new InMemoryServicesTypeRepository();
@@ -39,6 +41,11 @@ describe("ServicesTypeController", () => {
             password: "admin"
         });
         accessToken = loginResponse.body.accessToken;
+
+        servicesType = inMemoryServicesTypeRepository.createTestServicesType({
+            serviceName: "Test Service",
+            serviceCode: "TEST03",
+        });
     });
 
     beforeEach(() => {
@@ -88,7 +95,7 @@ describe("ServicesTypeController", () => {
                 Authorization: `Bearer ${accessToken}`
             }).send({
                 serviceName: "Test Service",
-                serviceCode: "TEST03",
+                serviceCode: "TEST05",
             });
 
             expect(response.status).toBe(200);
@@ -138,10 +145,53 @@ describe("ServicesTypeController", () => {
             expect(response.body).toEqual({
                 success: false,
                 error: {
-                    message: "Services type already exists",
+                    message: "Service type already exists",
                     type: "business_error"
                 }
             });
         });
+    });
+
+    describe("DELETE /services-type/:id", () => {
+        it("should return 200 and a message if the services type is deleted", async () => {
+            const response = await request(app).delete(`/services-type/${servicesType.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                success: true,
+                message: "Service type deleted successfully"
+            });
+        });
+
+        it("should return 401 if no access token is provided", async () => {
+            const response = await request(app).delete(`/services-type/${servicesType.id}`);
+
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the services type does not exist", async () => {
+            const response = await request(app).delete(`/services-type/non-existent-services-type-id`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Service type not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+
     });
 });

@@ -13,4 +13,5 @@ export const TYPES = {
     IGetUserByIdUseCase: "IGetUserByIdUseCase",
     IGetServicesTypeUseCase: "IGetServicesTypeUseCase",
     ICreateServicesTypeUseCase: "ICreateServicesTypeUseCase",
+    IDeleteServiceTypeUseCase: "IDeleteServiceTypeUseCase",
 };

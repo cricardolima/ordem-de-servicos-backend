@@ -14,7 +14,7 @@ export class CreateServicesTypeUseCase implements ICreateServicesTypeUseCase {
     public async execute(servicesType: ICreateServicesTypeRequest): Promise<ServicesType> {
         const servicesTypeExists = await this.servicesTypeRepository.findByServiceCode(servicesType.serviceCode);
         if (servicesTypeExists) {
-            throw new BusinessException("Services type already exists");
+            throw new BusinessException("Service type already exists");
         }
         
         return await this.servicesTypeRepository.create(servicesType);
