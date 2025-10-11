@@ -9,7 +9,7 @@ export const hasAccess = (roles: Roles) => {
                 roles = [roles];
             }
 
-            const hasRoles = roles.length && roles.some((r) => r === req.session.user.role);
+            const hasRoles = roles.length && roles.includes(req.session.user.role);
             const isAdmin = req.session.user.role === "ADMIN";
 
             if (!hasRoles && !isAdmin) {

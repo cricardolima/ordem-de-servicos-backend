@@ -6,7 +6,7 @@ import { RefreshToken, User, Role } from "@prisma/client";
 import { BusinessException } from "@exceptions/business.exception";
 import { NotFoundException } from "@exceptions/notFound.exception";
 import jwt, { SignOptions } from "jsonwebtoken";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import dayjs from "dayjs";
 import { Response } from "express";
 import { UnauthorizedException } from "@exceptions/unauthorized.exception";
@@ -87,7 +87,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
             throw new UnauthorizedException("Refresh token invalid or revoked");
         }
 
-        const isTokenExpired = dayjs.unix(parseInt(refreshToken.expiresAt)).isBefore(dayjs());
+        const isTokenExpired = dayjs.unix(Number.parseInt(refreshToken.expiresAt)).isBefore(dayjs());
 
         if (isTokenExpired) {
             throw new BusinessException("Refresh token expired");

@@ -10,7 +10,7 @@ import { hash } from "bcrypt";
 import { InMemoryUserRepositoryV2 } from "@tests/repositories/InMemoryUserRepositoryV2";
 import { IUserRepository } from "@repositories/UserRepository";
 import { Response } from "express";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 
 describe('RefreshTokenUseCase', () => {

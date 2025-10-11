@@ -1,4 +1,2 @@
-import { GetUsersUseCase } from "./GetUsers.use-case";
-import { IGetUsersUseCase } from "./GetUsers.interface";
-
-export { GetUsersUseCase, IGetUsersUseCase };
+export * from "./GetUsers.use-case";
+export * from "./GetUsers.interface";

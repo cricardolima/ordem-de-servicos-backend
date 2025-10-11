@@ -1,4 +1,2 @@
-import { RefreshTokenUseCase } from "./RefreshToken.use-case";
-import { IRefreshTokenUseCase } from "./RefreshToken.interface";
-
-export { RefreshTokenUseCase, IRefreshTokenUseCase };
+export * from "./RefreshToken.use-case";
+export * from "./RefreshToken.interface";

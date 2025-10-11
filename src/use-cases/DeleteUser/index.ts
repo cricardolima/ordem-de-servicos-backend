@@ -1,4 +1,2 @@
-import { DeleteUserUseCase } from "./DeleteUser.use-case";
-import { IDeleteUserUseCase } from "./DeleteUser.interface";
-
-export { DeleteUserUseCase, IDeleteUserUseCase };
+export * from "./DeleteUser.use-case";
+export * from "./DeleteUser.interface";

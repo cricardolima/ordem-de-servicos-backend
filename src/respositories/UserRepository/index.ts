@@ -1,4 +1,2 @@
-import { UserRepository } from "./user.repository";
-import { IUserRepository } from "./user.respository.interface";
-
-export { UserRepository, IUserRepository };
+export * from "./user.repository";
+export * from "./user.respository.interface";

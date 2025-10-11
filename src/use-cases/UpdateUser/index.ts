@@ -1,4 +1,2 @@
-import { UpdateUserUseCase } from "./UpdateUser.use-case";
-import { IUpdateUserUseCase } from "./UpdateUser.interface";
-
-export { UpdateUserUseCase, IUpdateUserUseCase };
+export * from "./UpdateUser.use-case";
+export * from "./UpdateUser.interface";

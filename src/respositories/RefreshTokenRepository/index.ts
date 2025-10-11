@@ -1,4 +1,2 @@
-import { RefreshTokenRepository } from "./refreshToken.repository";
-import { IRefreshTokenRepository } from "./refreshToken.repository.interface";
-
-export { RefreshTokenRepository, IRefreshTokenRepository };
+export * from "./refreshToken.repository";
+export * from "./refreshToken.repository.interface";

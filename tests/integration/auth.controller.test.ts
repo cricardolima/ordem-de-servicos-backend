@@ -7,7 +7,7 @@ import { InMemoryRefreshTokenRepository } from "../repositories/InMemoryRefreshT
 import { setupTestContainer } from "../utils/setupTestContainer";
 import { User, Role } from "@prisma/client";
 import { hash } from "bcrypt";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import dayjs from "dayjs";
 
 describe("AuthController", () => {
