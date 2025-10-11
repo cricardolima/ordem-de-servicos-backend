@@ -46,3 +46,5 @@ export interface IUpdateUserRequest {
 }
 
 export interface ICreateServicesTypeRequest extends Omit<ServicesType, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+
+export interface IUpdateServicesTypeRequest extends Omit<ServicesType, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}

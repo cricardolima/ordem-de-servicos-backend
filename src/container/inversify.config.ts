@@ -14,6 +14,7 @@ import { IServicesTypeRepository, ServicesTypeRepository } from "@repositories/S
 import { IGetServicesTypeUseCase, GetServicesTypeUseCase } from "@use-cases/GetServicesType";
 import { ICreateServicesTypeUseCase, CreateServicesTypeUseCase } from "@use-cases/CreateServicesType";
 import { IDeleteServiceTypeUseCase, DeleteServiceTypeUseCase } from "@use-cases/DeleteServiceType";
+import { IUpdateServicesTypeUseCase, UpdateServicesTypeUseCase } from "@use-cases/UpdateServicesType";
 
 export class ContainerApp {
     public init(): Container {
@@ -30,7 +31,7 @@ export class ContainerApp {
         container.bind<IGetServicesTypeUseCase>(TYPES.IGetServicesTypeUseCase).to(GetServicesTypeUseCase);
         container.bind<ICreateServicesTypeUseCase>(TYPES.ICreateServicesTypeUseCase).to(CreateServicesTypeUseCase);
         container.bind<IDeleteServiceTypeUseCase>(TYPES.IDeleteServiceTypeUseCase).to(DeleteServiceTypeUseCase);
-        
+        container.bind<IUpdateServicesTypeUseCase>(TYPES.IUpdateServicesTypeUseCase).to(UpdateServicesTypeUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);

@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IServicesTypeRepository } from "./servicesType.repository.interface";
 import { ServicesType } from "@prisma/client";
 import prisma from "@lib/prisma";
-import { ICreateServicesTypeRequest } from "@dtos/models";
+import { ICreateServicesTypeRequest, IUpdateServicesTypeRequest } from "@dtos/models";
 
 @injectable()
 export class ServicesTypeRepository implements IServicesTypeRepository {
@@ -31,6 +31,13 @@ export class ServicesTypeRepository implements IServicesTypeRepository {
     public async findById(id: string): Promise<ServicesType | null> {
         return await prisma.servicesType.findUnique({
             where: { id, deletedAt: null },
+        });
+    }
+
+    public async updateFromId(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void> {
+        await prisma.servicesType.update({
+            where: { id },
+            data: servicesType,
         });
     }
 }
