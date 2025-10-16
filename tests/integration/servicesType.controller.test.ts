@@ -154,7 +154,12 @@ describe("ServicesTypeController", () => {
 
     describe("DELETE /services-type/:id", () => {
         it("should return 200 and a message if the services type is deleted", async () => {
-            const response = await request(app).delete(`/services-type/${servicesType.id}`).set({
+            const newServicesType = inMemoryServicesTypeRepository.createTestServicesType({
+                serviceName: "Test Service",
+                serviceCode: "TEST05",
+            });
+
+            const response = await request(app).delete(`/services-type/${newServicesType.id}`).set({
                 Authorization: `Bearer ${accessToken}`
             });
 
@@ -203,6 +208,12 @@ describe("ServicesTypeController", () => {
                 serviceName: "Test Service Updated",
                 serviceCode: "TEST03",
             });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                success: true,
+                message: "Service type updated successfully"
+            });
         });
 
         it("should return 401 if no access token is provided", async () => {
@@ -219,7 +230,7 @@ describe("ServicesTypeController", () => {
         });
 
         it("should return 404 if the services type does not exist", async () => {
-            const response = await request(app).patch(`/services-type/${servicesType.id}`).set({
+            const response = await request(app).patch(`/services-type/non-existent-services-type-id`).set({
                 Authorization: `Bearer ${accessToken}`
             }).send({
                 serviceName: "Test Service Updated",

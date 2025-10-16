@@ -27,6 +27,11 @@ describe("UpdateServicesTypeUseCase", () => {
         });
     });
 
+    afterEach(() => {
+        inMemoryServicesTypeRepository.clear();
+        jest.clearAllMocks();
+    });
+
     it("should be defined", () => {
         expect(UpdateServicesTypeUseCase).toBeDefined();
     });
