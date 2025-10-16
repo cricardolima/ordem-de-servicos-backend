@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IServicesTypeRepository } from "../../src/respositories/ServicesTypeRepository/servicesType.repository.interface";
 import { ServicesType } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
-import { ICreateServicesTypeRequest } from "@dtos/models";
+import { ICreateServicesTypeRequest, IUpdateServicesTypeRequest } from "@dtos/models";
 
 @injectable()
 export class InMemoryServicesTypeRepository extends BaseInMemoryRepository<ServicesType> implements IServicesTypeRepository {
@@ -47,5 +47,16 @@ export class InMemoryServicesTypeRepository extends BaseInMemoryRepository<Servi
 
     public async findById(id: string): Promise<ServicesType | null> {
         return this.findByProperty('id', id) && this.findByProperty('deletedAt', null) || null;
+    }
+
+    public updateFromId(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void> {
+        const servicesTypeToUpdate = this.findByProperty('id', id) as ServicesType ;
+        if (!servicesTypeToUpdate) {
+            throw new Error('ServicesType not found');
+        }
+        Object.assign(servicesTypeToUpdate, servicesType);
+        servicesTypeToUpdate.updatedAt = new Date();
+        this.updateByProperty('id', id, servicesTypeToUpdate);
+        return Promise.resolve();
     }
 }

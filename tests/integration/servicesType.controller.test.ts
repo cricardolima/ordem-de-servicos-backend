@@ -194,4 +194,45 @@ describe("ServicesTypeController", () => {
         });
 
     });
+
+    describe("PATCH /services-type/:id", () => {
+        it("should return 200 and a message if the services type is updated", async () => {
+            const response = await request(app).patch(`/services-type/${servicesType.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                serviceName: "Test Service Updated",
+                serviceCode: "TEST03",
+            });
+        });
+
+        it("should return 401 if no access token is provided", async () => {
+            const response = await request(app).patch(`/services-type/${servicesType.id}`);
+
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the services type does not exist", async () => {
+            const response = await request(app).patch(`/services-type/${servicesType.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                serviceName: "Test Service Updated",
+            });
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Service type not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+    });
 });
