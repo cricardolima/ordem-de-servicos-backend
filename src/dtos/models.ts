@@ -1,5 +1,7 @@
 import { Professionals, Role, ServicesType } from "@prisma/client";
 
+type OmitedPrismaModel<T> = Omit<T, "id" | "createdAt" | "updatedAt" | "deletedAt">;
+
 export interface ISession {
     userId: string;
     role: string;
@@ -45,8 +47,8 @@ export interface IUpdateUserRequest {
     role?: Role;
 }
 
-export interface ICreateServicesTypeRequest extends Omit<ServicesType, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+export interface ICreateServicesTypeRequest extends OmitedPrismaModel<ServicesType> {}
 
-export interface IUpdateServicesTypeRequest extends Omit<ServicesType, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+export interface IUpdateServicesTypeRequest extends OmitedPrismaModel<ServicesType> {}
 
-export interface ICreateProfessionalsRequest extends Omit<Professionals, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
+export interface ICreateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}
