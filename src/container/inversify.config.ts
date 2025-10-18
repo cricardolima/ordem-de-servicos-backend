@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { TYPES } from "@container/types";
 import { IUserLoginUseCase, UserLoginUseCase } from "@use-cases/UserLogin";
 import { IUserRepository, UserRepository } from "@repositories/UserRepository";
-import { AuthController, UserController, ServicesTypeController } from "@controllers/index";
+import { AuthController, UserController, ServicesTypeController, ProfessionalsController } from "@controllers/index";
 import { IRefreshTokenRepository, RefreshTokenRepository } from "@repositories/RefreshTokenRepository";
 import { IRefreshTokenUseCase, RefreshTokenUseCase } from "@use-cases/RefreshToken";
 import { IGetUsersUseCase, GetUsersUseCase } from "@use-cases/GetUsers";
@@ -16,6 +16,8 @@ import { ICreateServicesTypeUseCase, CreateServicesTypeUseCase } from "@use-case
 import { IDeleteServiceTypeUseCase, DeleteServiceTypeUseCase } from "@use-cases/DeleteServiceType";
 import { IUpdateServicesTypeUseCase, UpdateServicesTypeUseCase } from "@use-cases/UpdateServicesType";
 import { IGetServicesTypeByIdUseCase, GetServicesTypeByIdUseCase } from "@use-cases/GetServicesTypeById";
+import { IProfessionalsRepository, ProfessionalsRepository } from "@repositories/ProfessionalsRepository";
+import { ICreateProfessionalsUseCase, CreateProfessionalsUseCase } from "@use-cases/CreateProfessionals";
 
 export class ContainerApp {
     public init(): Container {
@@ -34,14 +36,20 @@ export class ContainerApp {
         container.bind<IDeleteServiceTypeUseCase>(TYPES.IDeleteServiceTypeUseCase).to(DeleteServiceTypeUseCase);
         container.bind<IUpdateServicesTypeUseCase>(TYPES.IUpdateServicesTypeUseCase).to(UpdateServicesTypeUseCase);
         container.bind<IGetServicesTypeByIdUseCase>(TYPES.IGetServicesTypeByIdUseCase).to(GetServicesTypeByIdUseCase);
+        container.bind<ICreateProfessionalsUseCase>(TYPES.ICreateProfessionalsUseCase).to(CreateProfessionalsUseCase);
+
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);
         container.bind<IServicesTypeRepository>(TYPES.IServicesTypeRepository).to(ServicesTypeRepository);
+        container.bind<IProfessionalsRepository>(TYPES.IProfessionalsRepository).to(ProfessionalsRepository);
+
         // Bind dos Controllers
         container.bind(AuthController).toSelf().inSingletonScope();
         container.bind(UserController).toSelf().inSingletonScope();
         container.bind(ServicesTypeController).toSelf().inSingletonScope();
+        container.bind(ProfessionalsController).toSelf().inSingletonScope();
+        
         return container;
     }
 }
