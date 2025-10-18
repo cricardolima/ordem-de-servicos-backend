@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IServicesTypeRepository } from "../../src/respositories/ServicesTypeRepository/servicesType.repository.interface";
+import { IServicesTypeRepository } from "@repositories/ServicesTypeRepository";
 import { ServicesType } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
 import { ICreateServicesTypeRequest, IUpdateServicesTypeRequest } from "@dtos/models";

@@ -1,5 +1,5 @@
 import { CreateServicesTypeUseCase } from "./CreateServicesType.use-case";
-import { InMemoryServicesTypeRepository } from "@tests/repositories/InMemoryServicesTypeRepository";
+import { InMemoryServicesTypeRepository } from "@tests/repositories/inMemoryServicesTypeRepository";
 import { Container } from "inversify";
 import { ContainerApp } from "@container/inversify.config";
 import { TYPES } from "@container/types";

@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import { ContainerApp } from "@container/inversify.config";
 import { TYPES } from "@container/types";
-import { InMemoryServicesTypeRepository } from "@tests/repositories/InMemoryServicesTypeRepository";
+import { InMemoryServicesTypeRepository } from "@tests/repositories/inMemoryServicesTypeRepository";
 import { GetServicesTypeByIdUseCase } from "./GetServicesTypeById.use-case";
 import { ServicesType } from "@prisma/client";
 import { NotFoundException } from "@exceptions/notFound.exception";

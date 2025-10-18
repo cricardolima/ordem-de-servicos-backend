@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IUserRepository } from "@repositories/UserRepository/user.respository.interface";
+import { IUserRepository } from "@repositories/UserRepository";
 import { User, Role } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
 import { ICreateUserRequest, IUpdateUserRequest } from "@dtos/models";

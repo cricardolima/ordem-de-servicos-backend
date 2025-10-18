@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import { ContainerApp } from "@container/inversify.config";
 import { TYPES } from "@container/types";
-import { InMemoryServicesTypeRepository } from "@tests/repositories/InMemoryServicesTypeRepository";
+import { InMemoryServicesTypeRepository } from "@tests/repositories/inMemoryServicesTypeRepository";
 import { DeleteServiceTypeUseCase } from "./DeleteServiceType.use-case";
 import { IServicesTypeRepository } from "@repositories/ServicesTypeRepository";
 import { ServicesType } from "@prisma/client";

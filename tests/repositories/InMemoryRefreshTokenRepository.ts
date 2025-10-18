@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IRefreshTokenRepository } from "@repositories/RefreshTokenRepository/refreshToken.repository.interface";
+import { IRefreshTokenRepository } from "@repositories/RefreshTokenRepository";
 import { RefreshToken } from "@prisma/client";
 import { CreateRefreshTokenDto } from "@dtos/models";
 import dayjs from "dayjs";

@@ -1,12 +1,12 @@
 import { Express } from "express";
 import { Container } from "inversify";
-import { InMemoryServicesTypeRepository } from "../repositories/InMemoryServicesTypeRepository";
+import { InMemoryServicesTypeRepository } from "@tests/repositories/inMemoryServicesTypeRepository";
 import { setupTestContainer } from "../utils/setupTestContainer";
 import { App } from "../../src/app";
 import request from "supertest";
 import { InMemoryUserRepositoryV2 } from "../repositories/InMemoryUserRepositoryV2";
 import { InMemoryRefreshTokenRepository } from "../repositories/InMemoryRefreshTokenRepository";
-import createUser from "../utils/createUser";
+import createUser from "@tests/utils/createUser";
 import { ServicesType } from "@prisma/client";
 
 describe("ServicesTypeController", () => {
