@@ -23,4 +23,8 @@ export class InMemoryProfessionalsRepository extends BaseInMemoryRepository<Prof
         const professional = this.findByProperty('id', id);
         return professional ? Promise.resolve(professional) : Promise.resolve(null);
     }
+
+    public findAll(): Promise<Professionals[]> {
+        return Promise.resolve(this.getAllItems());
+    }
 }
