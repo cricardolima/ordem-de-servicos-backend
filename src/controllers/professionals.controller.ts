@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet, httpPatch, request, response, requestParam } from "inversify-express-utils";
+import { controller, httpPost, httpGet, httpPatch, httpDelete, request, response, requestParam } from "inversify-express-utils";
 import { AuthMiddleware } from "@middleware/auth.middleware";
 import { ValidateMiddleware } from "@middleware/validate.middleware";
 import { TYPES } from "@container/types";
@@ -10,6 +10,7 @@ import { Request, Response } from "express";
 import { IGetProfessionalByIdUseCase } from "@use-cases/GetProfessionalById";
 import { IGetProfessionalsUseCase } from "@use-cases/GetProfessionals";
 import { IUpdateProfessionalUseCase } from "@use-cases/UpdateProfessional";
+import { IDeleteProfessionalUseCase } from "@use-cases/DeleteProfessional";
 
 @controller("/professionals")
 export class ProfessionalsController {
@@ -22,6 +23,8 @@ export class ProfessionalsController {
         private readonly getProfessionalsUseCase: IGetProfessionalsUseCase,
         @inject(TYPES.IUpdateProfessionalUseCase)
         private readonly updateProfessionalUseCase: IUpdateProfessionalUseCase,
+        @inject(TYPES.IDeleteProfessionalUseCase)
+        private readonly deleteProfessionalUseCase: IDeleteProfessionalUseCase,
     ) {}
 
     @httpGet("/:id", AuthMiddleware)
@@ -43,5 +46,11 @@ export class ProfessionalsController {
     public async updateProfessional(@request() req: Request, @response() res: Response) {
         await this.updateProfessionalUseCase.execute(req.params.id as string, req.session, req.body);
         return res.status(200).json({ success: true, message: "Professional updated successfully" });
+    }
+
+    @httpDelete("/:id", AuthMiddleware)
+    public async deleteProfessional(@request() req: Request, @response() res: Response) {
+        await this.deleteProfessionalUseCase.execute(req.params.id as string, req.session);
+        return res.status(200).json({ success: true, message: "Professional deleted successfully" });
     }
 }

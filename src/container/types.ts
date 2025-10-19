@@ -30,4 +30,5 @@ export const TYPES = {
     IGetProfessionalByIdUseCase: "IGetProfessionalByIdUseCase",
     IGetProfessionalsUseCase: "IGetProfessionalsUseCase",
     IUpdateProfessionalUseCase: "IUpdateProfessionalUseCase",
+    IDeleteProfessionalUseCase: "IDeleteProfessionalUseCase",
 };

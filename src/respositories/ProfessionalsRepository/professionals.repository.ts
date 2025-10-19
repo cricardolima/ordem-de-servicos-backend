@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IProfessionalsRepository } from "./professionals.interface";
 import prisma from "@lib/prisma";
 import { Professionals } from "@prisma/client";
-import { ICreateProfessionalsRequest, IUpdateProfessionalsRequest } from "@dtos/models";
+import { ICreateProfessionalsRequest, IUpdateProfessionalsRequest, ISession } from "@dtos/models";
 
 @injectable()
 export class ProfessionalsRepository implements IProfessionalsRepository {
@@ -68,6 +68,13 @@ export class ProfessionalsRepository implements IProfessionalsRepository {
         await prisma.professionals.update({
             where: { id },
             data: professional,
+        });
+    }
+
+    public async deleteFromId(id: string, session: ISession): Promise<void> {
+        await prisma.professionals.update({
+            where: { id },
+            data: { deletedAt: new Date(), deletedById: session.userId },
         });
     }
 }
