@@ -29,4 +29,5 @@ export const TYPES = {
     ICreateProfessionalsUseCase: "ICreateProfessionalsUseCase",
     IGetProfessionalByIdUseCase: "IGetProfessionalByIdUseCase",
     IGetProfessionalsUseCase: "IGetProfessionalsUseCase",
+    IUpdateProfessionalUseCase: "IUpdateProfessionalUseCase",
 };

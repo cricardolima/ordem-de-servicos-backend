@@ -52,3 +52,5 @@ export interface ICreateServicesTypeRequest extends OmitedPrismaModel<ServicesTy
 export interface IUpdateServicesTypeRequest extends OmitedPrismaModel<ServicesType> {}
 
 export interface ICreateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}
+
+export interface IUpdateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}

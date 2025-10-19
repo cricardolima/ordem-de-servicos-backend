@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IProfessionalsRepository } from "./professionals.interface";
 import prisma from "@lib/prisma";
 import { Professionals } from "@prisma/client";
-import { ICreateProfessionalsRequest } from "@dtos/models";
+import { ICreateProfessionalsRequest, IUpdateProfessionalsRequest } from "@dtos/models";
 
 @injectable()
 export class ProfessionalsRepository implements IProfessionalsRepository {
@@ -61,6 +61,13 @@ export class ProfessionalsRepository implements IProfessionalsRepository {
         return await prisma.professionals.findMany({
             where: { deletedAt: null },
             include: this.include,
+        });
+    }
+
+    public async update(id: string, professional: IUpdateProfessionalsRequest): Promise<void> {
+        await prisma.professionals.update({
+            where: { id },
+            data: professional,
         });
     }
 }
