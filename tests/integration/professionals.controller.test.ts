@@ -9,7 +9,7 @@ import { App } from "../../src/app";
 import request from "supertest";
 import createUser from "@tests/utils/createUser";
 import { Professionals, User } from "@prisma/client";
-import { ICreateProfessionalsRequest } from "@dtos/models";
+import { ICreateProfessionalsRequest, IUpdateProfessionalsRequest } from "@dtos/models";
 
 describe("ProfessionalsController", () => {
     let app: Express;
@@ -152,17 +152,64 @@ describe("ProfessionalsController", () => {
             expect(response.body).toBeDefined();
             expect(response.body.length).not.toBe(0);
         });
-    });
 
-    it("should return 401 if the user is not authenticated", async () => {
-        const response = await request(app).get("/professionals");
-        expect(response.status).toBe(401);
-        expect(response.body).toEqual({
-            success: false,
-            error: {
-                message: "Token not found",
-                type: "unauthorized_error"
-            }
+        it("should return 401 if the user is not authenticated", async () => {
+            const response = await request(app).get("/professionals");
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
         });
     });
+
+    describe("PATCH /professionals/:id", () => {
+        it("should return 200 and update a professional", async () => {
+            const response = await request(app).patch(`/professionals/${professional.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "John Doe Updated",
+            } as IUpdateProfessionalsRequest);
+            
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({
+                success: true,
+                message: "Professional updated successfully"
+            });
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const response = await request(app).patch(`/professionals/${professional.id}`);
+
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the professional does not exist", async () => {
+            const response = await request(app).patch(`/professionals/non-existent-professional-id`).set({
+                Authorization: `Bearer ${accessToken}`
+            }).send({
+                name: "John Doe Updated",
+            } as IUpdateProfessionalsRequest);
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Professional not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+    }); 
+    
 });

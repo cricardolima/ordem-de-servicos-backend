@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { IProfessionalsRepository } from "@repositories/ProfessionalsRepository";
 import { Professionals } from "@prisma/client";
 import { BaseInMemoryRepository } from "./BaseInMemoryRepository";
-import { ICreateProfessionalsRequest } from "@dtos/models";
+import { ICreateProfessionalsRequest, IUpdateProfessionalsRequest } from "@dtos/models";
 
 @injectable()
 export class InMemoryProfessionalsRepository extends BaseInMemoryRepository<Professionals> implements IProfessionalsRepository {
@@ -26,5 +26,10 @@ export class InMemoryProfessionalsRepository extends BaseInMemoryRepository<Prof
 
     public findAll(): Promise<Professionals[]> {
         return Promise.resolve(this.getAllItems());
+    }
+
+    public update(id: string, professional: IUpdateProfessionalsRequest): Promise<void> {
+        this.updateByProperty('id', id, professional);
+        return Promise.resolve()
     }
 }
