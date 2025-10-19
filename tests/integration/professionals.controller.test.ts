@@ -102,4 +102,44 @@ describe("ProfessionalsController", () => {
 
         
     });
+
+    describe("GET /professionals/:id", () => {
+        it("should return 200 and get a professional by id", async () => {
+            const response = await request(app).get(`/professionals/${professional.id}`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toBeDefined();
+            expect(response.body.id).toBe(professional.id);
+            expect(response.body.name).toBe(professional.name);
+            expect(response.body.registration).toBe(professional.registration);
+        });
+
+        it("should return 401 if the user is not authenticated", async () => {
+            const response = await request(app).get(`/professionals/${professional.id}`);
+            expect(response.status).toBe(401);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Token not found",
+                    type: "unauthorized_error"
+                }
+            });
+        });
+
+        it("should return 404 if the professional does not exist", async () => {
+            const response = await request(app).get(`/professionals/non-existent-professional-id`).set({
+                Authorization: `Bearer ${accessToken}`
+            });
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual({
+                success: false,
+                error: {
+                    message: "Professional not found",
+                    type: "not_found_error"
+                }
+            });
+        });
+    });
 });

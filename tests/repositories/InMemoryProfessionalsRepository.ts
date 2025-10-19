@@ -18,4 +18,9 @@ export class InMemoryProfessionalsRepository extends BaseInMemoryRepository<Prof
         const professional = this.findByProperty('registration', registration);
         return professional ? Promise.resolve(professional) : Promise.resolve(null);
     }
+
+    public findById(id: string): Promise<Professionals | null> {
+        const professional = this.findByProperty('id', id);
+        return professional ? Promise.resolve(professional) : Promise.resolve(null);
+    }
 }
