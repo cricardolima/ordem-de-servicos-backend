@@ -17,4 +17,23 @@ export class ProfessionalsRepository implements IProfessionalsRepository {
             where: { registration },
         });
     }
+
+    public async findById(id: string): Promise<Professionals | null> {
+        return await prisma.professionals.findUnique({
+            where: { id },
+            include: {
+                createdBy: true,
+                updatedBy: true,
+                deletedBy: true,
+                servicesInvoice: {
+                    include: {
+                        serviceType: true,
+                        client: true,
+                        createdBy: true,
+                        updatedBy: true,
+                    },
+                },
+            },
+        }) ?? null;
+    }
 }
