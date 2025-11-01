@@ -37,8 +37,12 @@ export class UserRepository implements IUserRepository {
         return await prisma.user.findUnique({
             where: { id: userId, deletedAt: null },
             include: {
-                createdProfessionals: true,
-                updatedProfessionals: true,
+                createdProfessionals: {
+                    where: { deletedAt: null },
+                },
+                updatedProfessionals: {
+                    where: { deletedAt: null },
+                },
                 deletedProfessionals: true,
                 createdInvoices: true,
                 updatedInvoices: true,
