@@ -1,22 +1,25 @@
 export const TYPES = {
-    // Auth
-    IGetAllUsersUseCase: "IGetAllUsersUseCase",
-    IUserLoginUseCase: "IUserLoginUseCase",
+    // Repositories
     IUserRepository: "IUserRepository",
-    IProfessionalsRepository: "IProfessionalsRepository",
-
-    // Refresh Token
     IRefreshTokenRepository: "IRefreshTokenRepository",
     IServicesTypeRepository: "IServicesTypeRepository",
+    IProfessionalsRepository: "IProfessionalsRepository",
+    IClientsRepository: "IClientsRepository",
+    IClientAddressRepository: "IClientAddressRepository",
+    // Auth
+    IUserLoginUseCase: "IUserLoginUseCase",
+
+    // Refresh Token
     IGenerateRefreshTokenUseCase: "IGenerateRefreshTokenUseCase",
     IRefreshTokenUseCase: "IRefreshTokenUseCase",
-    IGetUsersUseCase: "IGetUsersUseCase",
 
     // User
     ICreateUserUseCase: "ICreateUserUseCase",
     IUpdateUserUseCase: "IUpdateUserUseCase",
     IDeleteUserUseCase: "IDeleteUserUseCase",
     IGetUserByIdUseCase: "IGetUserByIdUseCase",
+    IGetUsersUseCase: "IGetUsersUseCase",
+    IGetAllUsersUseCase: "IGetAllUsersUseCase",
 
     // Services Type
     IGetServicesTypeUseCase: "IGetServicesTypeUseCase",
@@ -31,4 +34,8 @@ export const TYPES = {
     IGetProfessionalsUseCase: "IGetProfessionalsUseCase",
     IUpdateProfessionalUseCase: "IUpdateProfessionalUseCase",
     IDeleteProfessionalUseCase: "IDeleteProfessionalUseCase",
+
+    // Clients
+    ICreateClientUseCase: "ICreateClientUseCase",
+    IGetClientByIdUseCase: "IGetClientByIdUseCase",
 };

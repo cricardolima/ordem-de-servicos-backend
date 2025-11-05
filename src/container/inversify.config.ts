@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { TYPES } from "@container/types";
 import { IUserLoginUseCase, UserLoginUseCase } from "@use-cases/UserLogin";
 import { IUserRepository, UserRepository } from "@repositories/UserRepository";
-import { AuthController, UserController, ServicesTypeController, ProfessionalsController } from "@controllers/index";
+import { AuthController, UserController, ServicesTypeController, ProfessionalsController, ClientsController } from "@controllers/index";
 import { IRefreshTokenRepository, RefreshTokenRepository } from "@repositories/RefreshTokenRepository";
 import { IRefreshTokenUseCase, RefreshTokenUseCase } from "@use-cases/RefreshToken";
 import { IGetUsersUseCase, GetUsersUseCase } from "@use-cases/GetUsers";
@@ -22,6 +22,10 @@ import { IGetProfessionalByIdUseCase, GetProfessionalByIdUseCase } from "@use-ca
 import { IGetProfessionalsUseCase, GetProfessionalsUseCase } from "@use-cases/GetProfessionals";
 import { IUpdateProfessionalUseCase, UpdateProfessionalUseCase } from "@use-cases/UpdateProfessional";
 import { IDeleteProfessionalUseCase, DeleteProfessionalUseCase } from "@use-cases/DeleteProfessional";
+import { IClientsRepository, ClientsRepository } from "@repositories/ClientsRepository";
+import { ICreateClientUseCase, CreateClientUseCase } from "@use-cases/CreateClient";
+import { IClientAddressRepository, ClientAddressRepository } from "@repositories/ClientAddressRepository";
+import { IGetClientByIdUseCase, GetClientByIdUseCase } from "@use-cases/GetClientById";
 
 export class ContainerApp {
     public init(): Container {
@@ -45,17 +49,21 @@ export class ContainerApp {
         container.bind<IGetProfessionalsUseCase>(TYPES.IGetProfessionalsUseCase).to(GetProfessionalsUseCase);
         container.bind<IUpdateProfessionalUseCase>(TYPES.IUpdateProfessionalUseCase).to(UpdateProfessionalUseCase);
         container.bind<IDeleteProfessionalUseCase>(TYPES.IDeleteProfessionalUseCase).to(DeleteProfessionalUseCase);
+        container.bind<ICreateClientUseCase>(TYPES.ICreateClientUseCase).to(CreateClientUseCase);
+        container.bind<IGetClientByIdUseCase>(TYPES.IGetClientByIdUseCase).to(GetClientByIdUseCase);
         // Bind dos Repositories
         container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
         container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);
         container.bind<IServicesTypeRepository>(TYPES.IServicesTypeRepository).to(ServicesTypeRepository);
         container.bind<IProfessionalsRepository>(TYPES.IProfessionalsRepository).to(ProfessionalsRepository);
-
+        container.bind<IClientsRepository>(TYPES.IClientsRepository).to(ClientsRepository);
+        container.bind<IClientAddressRepository>(TYPES.IClientAddressRepository).to(ClientAddressRepository);
         // Bind dos Controllers
         container.bind(AuthController).toSelf().inSingletonScope();
         container.bind(UserController).toSelf().inSingletonScope();
         container.bind(ServicesTypeController).toSelf().inSingletonScope();
         container.bind(ProfessionalsController).toSelf().inSingletonScope();
+        container.bind(ClientsController).toSelf().inSingletonScope();
         
         return container;
     }

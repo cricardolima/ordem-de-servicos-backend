@@ -1,4 +1,4 @@
-import { Professionals, Role, ServicesType } from "@prisma/client";
+import { Client, ClientAddress, Professionals, Role, ServicesType } from "@prisma/client";
 
 type OmitedPrismaModel<T> = Omit<T, "id" | "createdAt" | "updatedAt" | "deletedAt">;
 
@@ -54,3 +54,12 @@ export interface IUpdateServicesTypeRequest extends OmitedPrismaModel<ServicesTy
 export interface ICreateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}
 
 export interface IUpdateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}
+
+export interface ICreateClientRequest extends OmitedPrismaModel<Client> {
+    id?: string;
+    address: ICreateClientAddressRequest[];
+}
+
+export interface ICreateClientAddressRequest extends OmitedPrismaModel<ClientAddress> {
+    id?: string;
+}
