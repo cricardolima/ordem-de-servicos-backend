@@ -82,6 +82,7 @@ model Client {
     phone     String    @map("phone")
     createdAt DateTime  @default(now()) @map("created_at")
     updatedAt DateTime? @updatedAt @map("updated_at")
+    deletedAt DateTime? @map("deleted_at")
 
     servicesInvoice ServicesInvoice[]
 
@@ -134,6 +135,7 @@ model ClientAddress {
     // Campo para a relação muitos-para-muitos com Client
     client Client[] @relation("ClientAddress")
 
+    @@unique([street, number, neighborhood, zipCode])
     @@index([neighborhood])
     @@index([street])
     @@map("client_address")
