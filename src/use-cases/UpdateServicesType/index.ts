@@ -1,2 +1,2 @@
-export * from "./UpdateServicesType.interface";
-export * from "./UpdateServicesType.use-case";
+export * from './UpdateServicesType.interface';
+export * from './UpdateServicesType.use-case';

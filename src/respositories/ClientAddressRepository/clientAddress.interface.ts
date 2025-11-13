@@ -1,7 +1,7 @@
-import { ICreateClientAddressRequest, ISession } from "@dtos/models";
-import { ClientAddress } from "@prisma/client";
+import type { ICreateClientAddressRequest } from '@dtos/models';
+import type { ClientAddress } from '@prisma/client';
 
 export interface IClientAddressRepository {
-    createClientAddress(clientAddress: ICreateClientAddressRequest): Promise<ClientAddress>;
-    findAddressWithWhere(address: ICreateClientAddressRequest): Promise<ClientAddress | null>;
+  createClientAddress(clientAddress: ICreateClientAddressRequest): Promise<ClientAddress>;
+  findAddressWithWhere(address: ICreateClientAddressRequest): Promise<ClientAddress | null>;
 }

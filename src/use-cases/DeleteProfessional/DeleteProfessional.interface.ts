@@ -1,5 +1,5 @@
-import { ISession } from "@dtos/models";
+import type { ISession } from '@dtos/models';
 
 export interface IDeleteProfessionalUseCase {
-    execute(id: string, session: ISession): Promise<void>;
+  execute(id: string, session: ISession): Promise<void>;
 }

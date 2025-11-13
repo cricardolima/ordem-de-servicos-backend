@@ -1,8 +1,10 @@
-import * as zod from "zod";
+import * as zod from 'zod';
 
-export const updateServiceTypeSchema = zod.object({
+export const updateServiceTypeSchema = zod
+  .object({
     serviceName: zod.string().optional(),
     serviceCode: zod.string().optional(),
-}).refine((data) => data.serviceName || data.serviceCode, {
-    message: "At least one field is required",
-});
+  })
+  .refine((data) => data.serviceName || data.serviceCode, {
+    message: 'At least one field is required',
+  });

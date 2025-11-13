@@ -1,5 +1,5 @@
-import { IUpdateServicesTypeRequest } from "@dtos/models";
+import type { IUpdateServicesTypeRequest } from '@dtos/models';
 
 export interface IUpdateServicesTypeUseCase {
-    execute(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void>;
+  execute(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void>;
 }

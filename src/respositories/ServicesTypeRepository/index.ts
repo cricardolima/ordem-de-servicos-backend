@@ -1,2 +1,2 @@
-export * from "./servicesType.repository";
-export * from "./servicesType.repository.interface";
+export * from './servicesType.repository';
+export * from './servicesType.repository.interface';

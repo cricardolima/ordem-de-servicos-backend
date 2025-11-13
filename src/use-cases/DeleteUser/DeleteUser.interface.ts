@@ -1,5 +1,3 @@
-
-
 export interface IDeleteUserUseCase {
-    execute(userId: string): Promise<void>;
+  execute(userId: string): Promise<void>;
 }

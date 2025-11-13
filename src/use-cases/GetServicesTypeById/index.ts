@@ -1,2 +1,2 @@
-export * from "./GetServicesTypeById.use-case";
-export * from "./GetServicesTypeById.interface";
+export * from './GetServicesTypeById.interface';
+export * from './GetServicesTypeById.use-case';

@@ -1,2 +1,2 @@
-export * from "./DeleteProfessional.interface";
-export * from "./DeleteProfessional.use-case";
+export * from './DeleteProfessional.interface';
+export * from './DeleteProfessional.use-case';

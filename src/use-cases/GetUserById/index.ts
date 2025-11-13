@@ -1,2 +1,2 @@
-export * from "./GetUserById.use-case";
-export * from "./GetUserById.interface";
+export * from './GetUserById.interface';
+export * from './GetUserById.use-case';

@@ -1,2 +1,2 @@
-export * from "./DeleteUser.use-case";
-export * from "./DeleteUser.interface";
+export * from './DeleteUser.interface';
+export * from './DeleteUser.use-case';

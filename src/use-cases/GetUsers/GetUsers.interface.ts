@@ -1,5 +1,5 @@
-import { User } from "@prisma/client";
+import type { User } from '@prisma/client';
 
 export interface IGetUsersUseCase {
-    execute(): Promise<User[]>;
+  execute(): Promise<User[]>;
 }

@@ -1,2 +1,2 @@
-export * from "./GetClientById.interface";
-export * from "./GetClientById.use-case";
+export * from './GetClientById.interface';
+export * from './GetClientById.use-case';

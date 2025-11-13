@@ -1,2 +1,2 @@
-export * from "./DeleteServiceType.use-case";
-export * from "./DeleteServiceType.interface";
+export * from './DeleteServiceType.interface';
+export * from './DeleteServiceType.use-case';

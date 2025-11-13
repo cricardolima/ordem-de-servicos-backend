@@ -1,2 +1,2 @@
-export * from "./clients.repository";
-export * from "./clients.interface";
+export * from './clients.interface';
+export * from './clients.repository';

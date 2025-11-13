@@ -1,2 +1,2 @@
-export * from "./professionals.repository";
-export * from "./professionals.interface";
+export * from './professionals.interface';
+export * from './professionals.repository';

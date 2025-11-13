@@ -1,5 +1,5 @@
-import { IUpdateUserRequest } from "@dtos/models";
+import type { IUpdateUserRequest } from '@dtos/models';
 
 export interface IUpdateUserUseCase {
-    execute(userId: string, data: IUpdateUserRequest): Promise<void>;
+  execute(userId: string, data: IUpdateUserRequest): Promise<void>;
 }

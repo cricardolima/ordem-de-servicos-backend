@@ -1,5 +1,5 @@
-import { ServicesType } from "@prisma/client";
+import type { ServicesType } from '@prisma/client';
 
 export interface IGetServicesTypeByIdUseCase {
-    execute(id: string): Promise<ServicesType>;
+  execute(id: string): Promise<ServicesType>;
 }

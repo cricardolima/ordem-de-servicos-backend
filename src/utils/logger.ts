@@ -1,32 +1,34 @@
-import winston from "winston";
+import winston from 'winston';
 
-const transports = [
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-    new winston.transports.File({ filename: "logs/combined.log" }),
+const transports: winston.transport[] = [
+  new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+  new winston.transports.File({ filename: 'logs/combined.log' }),
 ];
 
-if (process.env.NODE_ENV !== "test") {
-    transports.push(new winston.transports.Console() as any);
+if (process.env.NODE_ENV !== 'test') {
+  transports.push(new winston.transports.Console());
 }
 
 const logger = winston.createLogger({
-    level: process.env.NODE_ENV === "development" ? "debug" : "info",
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-        winston.format.colorize(),
-        winston.format.errors({ stack: true }),
-    ),
-    defaultMeta: {
-        service: "ordens-de-servico-api",
-    },
-    transports
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+    winston.format.colorize(),
+    winston.format.errors({ stack: true }),
+  ),
+  defaultMeta: {
+    service: 'ordens-de-servico-api',
+  },
+  transports,
 });
 
-if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
-    logger.add(new winston.transports.Console({
-        format: winston.format.simple(),
-    }));
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  );
 }
 
 export default logger;

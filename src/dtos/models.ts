@@ -1,50 +1,50 @@
-import { Client, ClientAddress, Professionals, Role, ServicesType } from "@prisma/client";
+import type { Client, ClientAddress, Professionals, Role, ServicesType } from '@prisma/client';
 
-type OmitedPrismaModel<T> = Omit<T, "id" | "createdAt" | "updatedAt" | "deletedAt">;
+type OmitedPrismaModel<T> = Omit<T, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
 export interface ISession {
-    userId: string;
-    role: string;
+  userId: string;
+  role: string;
 }
 
 export interface CreateRefreshTokenDto {
-    token: string;
-    userId: string;
-    expiresAt: string;
+  token: string;
+  userId: string;
+  expiresAt: string;
 }
 
 export interface IUserLoginRequest {
-    registration: string;
-    password: string;
+  registration: string;
+  password: string;
 }
 
 export interface IUserLoginResponse {
-    accessToken: string;
+  accessToken: string;
 }
 
 export interface IRefreshTokenRequestDto {
-    refreshToken: string;
+  refreshToken: string;
 }
 
 export interface IValidateRefreshTokenResponse {
-    userId: string;
-    tokenId: string;
+  userId: string;
+  tokenId: string;
 }
 
-export type Roles = "ADMIN" | "USER" | Role | Role[];
+export type Roles = 'ADMIN' | 'USER' | Role | Role[];
 
 export interface ICreateUserRequest {
-    name: string;
-    registration: string;
-    password: string;
-    role: Role;
+  name: string;
+  registration: string;
+  password: string;
+  role: Role;
 }
 
 export interface IUpdateUserRequest {
-    name?: string;
-    registration?: string;
-    password?: string;
-    role?: Role;
+  name?: string;
+  registration?: string;
+  password?: string;
+  role?: Role;
 }
 
 export interface ICreateServicesTypeRequest extends OmitedPrismaModel<ServicesType> {}
@@ -56,10 +56,10 @@ export interface ICreateProfessionalsRequest extends OmitedPrismaModel<Professio
 export interface IUpdateProfessionalsRequest extends OmitedPrismaModel<Professionals> {}
 
 export interface ICreateClientRequest extends OmitedPrismaModel<Client> {
-    id?: string;
-    address: ICreateClientAddressRequest[];
+  id?: string;
+  address: ICreateClientAddressRequest[];
 }
 
 export interface ICreateClientAddressRequest extends OmitedPrismaModel<ClientAddress> {
-    id?: string;
+  id?: string;
 }

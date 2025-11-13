@@ -1,2 +1,2 @@
-export * from "./CreateProfessionals.use-case";
-export * from "./CreateProfessionals.interface";
+export * from './CreateProfessionals.interface';
+export * from './CreateProfessionals.use-case';

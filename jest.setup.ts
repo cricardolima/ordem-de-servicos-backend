@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
 process.env.JWT_SECRET = 'test-jwt-secret';
 process.env.REFRESH_JWT_SECRET = 'test-refresh-jwt-secret';

@@ -1,5 +1,5 @@
-import { Professionals } from "@prisma/client";
+import type { Professionals } from '@prisma/client';
 
 export interface IGetProfessionalsUseCase {
-    execute(): Promise<Professionals[]>;
+  execute(): Promise<Professionals[]>;
 }

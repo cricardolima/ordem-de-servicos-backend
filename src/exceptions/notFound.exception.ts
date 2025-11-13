@@ -1,6 +1,6 @@
-import { ErrorHandler } from "@exceptions/errorHandler";
+import { ErrorHandler } from '@exceptions/errorHandler';
 
 export class NotFoundException extends ErrorHandler {
-    statusCode = 404;
-    isOperational = true;
+  statusCode = 404;
+  isOperational = true;
 }
