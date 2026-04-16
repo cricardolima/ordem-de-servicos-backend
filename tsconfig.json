@@ -12,7 +12,6 @@
     // For nodejs:
     "lib": ["ES2022"],
     "types": ["node", "jest"],
-    "moduleResolution": "node",
 
     // Other Outputs
     "sourceMap": true,
@@ -39,7 +38,6 @@
     "incremental": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": ".",
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
@@ -53,11 +51,11 @@
       "@dtos/*": ["./src/dtos/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@exceptions/*": ["./src/exceptions/*"],
-      "@middleware/*": ["src/middlewares/*"],
+      "@middleware/*": ["./src/middlewares/*"],
       "@validators/*": ["./src/validators/*"],
       "@tests/*": ["./tests/*"]
     }
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "prisma/**/*.ts", "tests/**/*.ts", "prisma.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
