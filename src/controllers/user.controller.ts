@@ -1,29 +1,15 @@
 import { TYPES } from '@container/types';
 import type { ICreateUserRequest, IUpdateUserRequest } from '@dtos/models';
-import { AuthMiddleware } from '@middleware/auth.middleware';
-import { ValidateMiddleware } from '@middleware/validate.middleware';
 import type { User } from '@prisma/client';
 import type { ICreateUserUseCase } from '@use-cases/CreateUser';
 import type { IDeleteUserUseCase } from '@use-cases/DeleteUser';
 import type { IGetUserByIdUseCase } from '@use-cases/GetUserById';
 import type { IGetUsersUseCase } from '@use-cases/GetUsers';
 import type { IUpdateUserUseCase } from '@use-cases/UpdateUser';
-import { createUserSchema } from '@validators/createUser.schema';
-import { updateUserSchema } from '@validators/updateUser.schema';
-import type { Response } from 'express';
-import { inject } from 'inversify';
-import {
-  controller,
-  httpDelete,
-  httpGet,
-  httpPatch,
-  httpPost,
-  requestBody,
-  requestParam,
-  response,
-} from 'inversify-express-utils';
+import type { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
 
-@controller('/users')
+@injectable()
 export class UserController {
   private readonly getUsersUseCase: IGetUsersUseCase;
   private readonly createUserUseCase: ICreateUserUseCase;
@@ -45,35 +31,26 @@ export class UserController {
     this.getUserByIdUseCase = getUserByIdUseCase;
   }
 
-  @httpGet('/', AuthMiddleware)
   public async getUsers(): Promise<User[]> {
     return this.getUsersUseCase.execute();
   }
 
-  @httpGet('/:id', AuthMiddleware)
-  public async getUser(@requestParam('id') id: string): Promise<User> {
-    return this.getUserByIdUseCase.execute(id);
+  public async getUser(req: Request): Promise<User> {
+    return this.getUserByIdUseCase.execute(req.params.id as string);
   }
 
-  @httpPost('/', ValidateMiddleware(createUserSchema), AuthMiddleware)
-  public async createUser(@requestBody() body: ICreateUserRequest, @response() res: Response): Promise<Response> {
-    const user = await this.createUserUseCase.execute(body);
+  public async createUser(req: Request, res: Response): Promise<Response> {
+    const user = await this.createUserUseCase.execute(req.body as ICreateUserRequest);
     return res.status(201).json(user);
   }
 
-  @httpPatch('/:id', ValidateMiddleware(updateUserSchema), AuthMiddleware)
-  public async updateUser(
-    @requestParam('id') id: string,
-    @requestBody() body: IUpdateUserRequest,
-    @response() res: Response,
-  ): Promise<Response> {
-    await this.updateUserUseCase.execute(id, body);
+  public async updateUser(req: Request, res: Response): Promise<Response> {
+    await this.updateUserUseCase.execute(req.params.id as string, req.body as IUpdateUserRequest);
     return res.status(200).json({ success: true, message: 'User updated successfully' });
   }
 
-  @httpDelete('/:id', AuthMiddleware)
-  public async deleteUser(@requestParam('id') id: string, @response() res: Response): Promise<Response> {
-    await this.deleteUserUseCase.execute(id);
+  public async deleteUser(req: Request, res: Response): Promise<Response> {
+    await this.deleteUserUseCase.execute(req.params.id as string);
     return res.status(200).json({ success: true, message: 'User deleted successfully' });
   }
 }

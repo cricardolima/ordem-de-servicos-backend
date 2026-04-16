@@ -1,14 +1,11 @@
 import { TYPES } from '@container/types';
 import type { IUserLoginRequest } from '@dtos/models';
-import { ValidateMiddleware } from '@middleware/validate.middleware';
 import type { IRefreshTokenUseCase } from '@use-cases/RefreshToken';
 import type { IUserLoginUseCase } from '@use-cases/UserLogin';
-import { authSchema } from '@validators/auth.schema';
 import type { Request, Response } from 'express';
-import { inject } from 'inversify';
-import { controller, httpPost, request, requestBody, response } from 'inversify-express-utils';
+import { inject, injectable } from 'inversify';
 
-@controller('/auth')
+@injectable()
 export class AuthController {
   private readonly userLoginUseCase: IUserLoginUseCase;
   private readonly refreshTokenUseCase: IRefreshTokenUseCase;
@@ -22,13 +19,11 @@ export class AuthController {
     this.refreshTokenUseCase = refreshTokenUseCase;
   }
 
-  @httpPost('/login', ValidateMiddleware(authSchema))
-  public async login(@requestBody() body: IUserLoginRequest, @response() res: Response) {
-    return this.userLoginUseCase.execute(body, res);
+  public async login(req: Request, res: Response) {
+    return this.userLoginUseCase.execute(req.body as IUserLoginRequest, res);
   }
 
-  @httpPost('/logout')
-  public async logout(@request() req: Request, @response() res: Response) {
+  public async logout(req: Request, res: Response) {
     await this.refreshTokenUseCase.revokeRefreshToken(req.cookies.refreshToken, res);
     return {
       success: true,
@@ -36,8 +31,7 @@ export class AuthController {
     };
   }
 
-  @httpPost('/refresh-token')
-  public async refreshToken(@request() req: Request, @response() res: Response) {
+  public async refreshToken(req: Request, res: Response) {
     return this.refreshTokenUseCase.refreshToken(req.cookies.refreshToken, res);
   }
 }
