@@ -38,8 +38,7 @@ describe('UserController', () => {
     });
 
     const appInstance = new App(testContainer);
-    (appInstance as unknown as { container: Container }).container = testContainer;
-    app = (appInstance as unknown as { server: { build: () => Express } }).server.build();
+    app = appInstance.build();
 
     user = await createUser();
     // realiza login para obter access token válido

@@ -5,4 +5,5 @@ export interface IClientsRepository {
   findByPhone(phone: string): Promise<Client | null>;
   create(client: ICreateClientRequest): Promise<Client>;
   findById(id: string): Promise<Client | null>;
+  deleteFromId(id: string): Promise<void>;
 }

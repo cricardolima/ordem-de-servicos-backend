@@ -31,8 +31,7 @@ describe('ServicesTypeController', () => {
     });
 
     const appInstance = new App(testContainer);
-    (appInstance as unknown as { container: Container }).container = testContainer;
-    app = (appInstance as unknown as { server: { build: () => Express } }).server.build();
+    app = appInstance.build();
 
     await createUser(inMemoryUserRepository);
 

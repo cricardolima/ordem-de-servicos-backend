@@ -5,54 +5,58 @@ import logger from '@utils/logger';
 import { setupProcessHandlers } from '@utils/processHandlers';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { type Express } from 'express';
 import type { Container } from 'inversify';
-import { InversifyExpressServer } from 'inversify-express-utils';
+import { registerRoutes } from './routes';
 
 export class App {
-  private readonly server: InversifyExpressServer;
   private readonly container: Container;
+  private app?: Express;
 
   constructor(container?: Container) {
     this.container = container || new ContainerApp().init();
-    this.server = new InversifyExpressServer(this.container);
-    this.setupMiddleware();
+    setupProcessHandlers();
   }
 
-  private setupMiddleware(): void {
-    this.server.setConfig((app) => {
-      // Middleware para parsing de JSON
-      app.use(express.json());
-      app.use(express.urlencoded({ extended: true }));
-      app.use(cookieParser());
+  private setupMiddleware(app: Express): void {
+    // Middleware para parsing de JSON
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(cookieParser());
 
-      // Middleware para CORS
-      app.use(
-        cors({
-          origin: process.env.CORS_ORIGIN || '*',
-          methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-          allowedHeaders: ['Content-Type', 'Authorization'],
-        }),
-      );
+    // Middleware para CORS
+    app.use(
+      cors({
+        origin: process.env.CORS_ORIGIN || '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      }),
+    );
 
-      // Middleware para logging básico
-      app.use((req, _, next) => {
-        logger.info(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-        next();
-      });
-
-      // Middleware para process handlers
-      setupProcessHandlers();
+    // Middleware para logging básico
+    app.use((req, _, next) => {
+      logger.info(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+      next();
     });
+  }
 
-    this.server.setErrorConfig((app) => {
-      // Middleware de tratamento de erros
-      app.use(errorHandlerMiddleware);
-    });
+  public build(): Express {
+    if (this.app) {
+      return this.app;
+    }
+
+    const app = express();
+
+    this.setupMiddleware(app);
+    app.use(registerRoutes(this.container));
+    app.use(errorHandlerMiddleware);
+
+    this.app = app;
+    return app;
   }
 
   public start(port: number = 3000): void {
-    const app = this.server.build();
+    const app = this.build();
 
     app.listen(port, () => {
       logger.info(`🚀 Servidor rodando na porta ${port}`);

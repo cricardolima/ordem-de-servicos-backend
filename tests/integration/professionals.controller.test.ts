@@ -1,4 +1,3 @@
-import type { ProfessionalsController } from '@controllers/professionals.controller';
 import type { ICreateProfessionalsRequest, IUpdateProfessionalsRequest } from '@dtos/models';
 import type { Professionals, User } from '@prisma/client';
 import { InMemoryProfessionalsRepository } from '@tests/repositories/InMemoryProfessionalsRepository';
@@ -19,7 +18,6 @@ describe('ProfessionalsController', () => {
   let inMemoryRefreshTokenRepository: InMemoryRefreshTokenRepository;
   let accessToken: string;
   let consoleErrorSpy: jest.SpyInstance;
-  let _professionalsController: ProfessionalsController;
   let user: User;
   let professional: Professionals;
 
@@ -35,8 +33,7 @@ describe('ProfessionalsController', () => {
     });
 
     const appInstance = new App(testContainer);
-    (appInstance as unknown as { container: Container }).container = testContainer;
-    app = (appInstance as unknown as { server: { build: () => Express } }).server.build();
+    app = appInstance.build();
 
     user = await createUser(inMemoryUserRepository);
 

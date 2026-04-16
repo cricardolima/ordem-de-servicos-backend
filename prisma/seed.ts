@@ -1,8 +1,18 @@
-import { PrismaClient } from '@prisma/client';
-import { hash } from 'bcrypt';
 import 'dotenv/config';
 
-const prisma = new PrismaClient();
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
+import { hash } from 'bcrypt';
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is required');
+}
+
+const adapter = new PrismaPg({ connectionString });
+
+const prisma = new PrismaClient({ adapter });
 
 const main = async () => {
   console.log('Starting seed...');

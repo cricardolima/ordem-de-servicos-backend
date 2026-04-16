@@ -1,5 +1,5 @@
+import type { CreateRefreshTokenDto } from '@dtos/models';
 import type { RefreshToken } from '@prisma/client';
-import type { CreateRefreshTokenDto } from 'src/dtos/models';
 
 export interface IRefreshTokenRepository {
   create(data: CreateRefreshTokenDto): Promise<RefreshToken>;

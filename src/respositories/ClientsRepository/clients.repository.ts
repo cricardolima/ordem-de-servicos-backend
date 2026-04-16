@@ -72,4 +72,16 @@ export class ClientsRepository implements IClientsRepository {
       },
     });
   }
+
+  public async deleteFromId(id: string): Promise<void> {
+    await prisma.client.update({
+      where: { id },
+      include: {
+        clientAddress: true,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }
