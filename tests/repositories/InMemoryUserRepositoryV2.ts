@@ -6,16 +6,20 @@ import { BaseInMemoryRepository } from './BaseInMemoryRepository';
 
 @injectable()
 export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> implements IUserRepository {
+  private get activeUsers(): User[] {
+    return this.items.filter((user) => user.deletedAt === null);
+  }
+
   public async findAll(): Promise<User[]> {
-    return this.items;
+    return this.activeUsers;
   }
 
   public async findByRegistration(registration: string): Promise<User | null> {
-    return this.findByProperty('registration', registration) || null;
+    return this.activeUsers.find((user) => user.registration === registration) || null;
   }
 
   public async findById(id: string): Promise<User | null> {
-    return (this.findByProperty('id', id) && this.findByProperty('deletedAt', null)) || null;
+    return this.activeUsers.find((user) => user.id === id) || null;
   }
 
   public async findByRole(role: Role): Promise<User[]> {
@@ -27,7 +31,7 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
   }
 
   public async findByIdAndDeletedAtNull(id: string): Promise<User | null> {
-    return (this.findByProperty('id', id) && this.findByProperty('deletedAt', null)) || null;
+    return this.activeUsers.find((user) => user.id === id) || null;
   }
 
   public createTestUser(overrides: Partial<User> = {}): User {
@@ -67,7 +71,7 @@ export class InMemoryUserRepositoryV2 extends BaseInMemoryRepository<User> imple
   }
 
   public async findActiveUsers(): Promise<User[]> {
-    return this.items.filter((user) => !user.deletedAt);
+    return this.activeUsers;
   }
 
   public async findDeletedUsers(): Promise<User[]> {

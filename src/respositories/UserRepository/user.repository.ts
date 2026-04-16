@@ -11,6 +11,7 @@ export class UserRepository implements IUserRepository {
       (await prisma.user.findUnique({
         where: {
           registration,
+          deletedAt: null,
         },
       })) || null;
 
@@ -18,7 +19,7 @@ export class UserRepository implements IUserRepository {
   }
 
   public async findAll(): Promise<User[]> {
-    return await prisma.user.findMany();
+    return await prisma.user.findMany({ where: { deletedAt: null } });
   }
 
   public async create(user: ICreateUserRequest): Promise<User> {

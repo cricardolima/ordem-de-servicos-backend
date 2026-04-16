@@ -73,6 +73,16 @@ describe('UserController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body[0]).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+          registration: expect.any(String),
+          role: expect.any(String),
+        }),
+      );
+      expect(response.body[0].password).toBeUndefined();
     });
   });
 
@@ -91,15 +101,11 @@ describe('UserController', () => {
         });
       expect(response.status).toBe(201);
       expect(response.body).toBeDefined();
+      expect(response.body.password).toBeUndefined();
     });
 
     it('should return 401 if the user is not authenticated', async () => {
-      const response = await request(app).post('/users').send({
-        name: 'Test User',
-        registration: 'teste user',
-        password: 'password123',
-        role: Role.ADMIN,
-      });
+      const response = await request(app).post('/users').send({});
 
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
@@ -222,7 +228,7 @@ describe('UserController', () => {
 
     it('should return 401 if the user is not authenticated', async () => {
       const user = await createUser();
-      const response = await request(app).patch(`/users/${user.id}`);
+      const response = await request(app).patch(`/users/${user.id}`).send({});
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
         success: false,
@@ -263,7 +269,7 @@ describe('UserController', () => {
       expect(response.body.name).toBe(user.name);
       expect(response.body.registration).toBe(user.registration);
       expect(response.body.role).toBe(user.role);
-      expect(response.body.password).toBeDefined();
+      expect(response.body.password).toBeUndefined();
       expect(response.body.createdAt).toBeDefined();
       expect(response.body.updatedAt).toBeDefined();
       expect(response.body.deletedAt).toBeNull();

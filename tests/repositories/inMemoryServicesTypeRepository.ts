@@ -9,14 +9,12 @@ export class InMemoryServicesTypeRepository
   extends BaseInMemoryRepository<ServicesType>
   implements IServicesTypeRepository
 {
-  private servicesTypes: ServicesType[] = [];
-
-  public addServicesType(servicesType: ServicesType): void {
-    this.servicesTypes.push(servicesType);
+  private get activeServicesTypes(): ServicesType[] {
+    return this.items.filter((serviceType) => serviceType.deletedAt === null);
   }
 
   public findAll(): Promise<ServicesType[]> {
-    return Promise.resolve(this.servicesTypes);
+    return Promise.resolve(this.activeServicesTypes);
   }
 
   public create(servicesType: ICreateServicesTypeRequest): Promise<ServicesType> {
@@ -45,21 +43,28 @@ export class InMemoryServicesTypeRepository
     return defaultServicesType;
   }
 
+  public getByIdIncludingDeleted(id: string): ServicesType | null {
+    return this.findByProperty('id', id) || null;
+  }
+
   public async findByServiceCode(serviceCode: string): Promise<ServicesType | null> {
-    const servicesType = this.findByProperty('serviceCode', serviceCode) || null;
+    const servicesType =
+      this.activeServicesTypes.find((serviceType) => serviceType.serviceCode === serviceCode) || null;
     return servicesType || null;
   }
 
-  public async deleteFromId(id: string): Promise<void> {
-    this.removeByProperty('id', id);
+  public async softDelete(id: string): Promise<void> {
+    this.updateByProperty('id', id, {
+      deletedAt: new Date(),
+    });
   }
 
   public async findById(id: string): Promise<ServicesType | null> {
-    return (this.findByProperty('id', id) && this.findByProperty('deletedAt', null)) || null;
+    return this.activeServicesTypes.find((serviceType) => serviceType.id === id) || null;
   }
 
   public updateFromId(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void> {
-    const servicesTypeToUpdate = this.findByProperty('id', id) as ServicesType;
+    const servicesTypeToUpdate = this.activeServicesTypes.find((serviceType) => serviceType.id === id);
     if (!servicesTypeToUpdate) {
       throw new Error('ServicesType not found');
     }

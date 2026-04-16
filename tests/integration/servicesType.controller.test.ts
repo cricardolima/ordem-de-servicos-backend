@@ -72,7 +72,37 @@ describe('ServicesTypeController', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body[0]).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          serviceName: expect.any(String),
+          serviceCode: expect.any(String),
+          deletedAt: null,
+        }),
+      );
+    });
+
+    it('should not return deleted services types in the list', async () => {
+      const deletedServicesType = inMemoryServicesTypeRepository.createTestServicesType({
+        serviceName: 'Deleted Service',
+        serviceCode: 'TEST99',
+      });
+
+      await request(app)
+        .delete(`/services-type/${deletedServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      const response = await request(app)
+        .get('/services-type')
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.some((item: ServicesType) => item.id === deletedServicesType.id)).toBe(false);
     });
 
     it('should return 401 if no access token is provided', async () => {
@@ -98,11 +128,18 @@ describe('ServicesTypeController', () => {
         })
         .send({
           serviceName: 'Test Service',
-          serviceCode: 'TEST05',
+          serviceCode: 'TEST06',
         });
 
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          serviceName: 'Test Service',
+          serviceCode: 'TEST06',
+          deletedAt: null,
+        }),
+      );
     });
 
     it('should return 401 if no access token is provided', async () => {
@@ -210,6 +247,34 @@ describe('ServicesTypeController', () => {
         },
       });
     });
+
+    it('should return 404 if the services type was already deleted', async () => {
+      const deletableServicesType = inMemoryServicesTypeRepository.createTestServicesType({
+        serviceName: 'Already Deleted',
+        serviceCode: 'TEST07',
+      });
+
+      await request(app)
+        .delete(`/services-type/${deletableServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      const response = await request(app)
+        .delete(`/services-type/${deletableServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Service type not found',
+          type: 'not_found_error',
+        },
+      });
+    });
   });
 
   describe('PATCH /services-type/:id', () => {
@@ -263,6 +328,37 @@ describe('ServicesTypeController', () => {
         },
       });
     });
+
+    it('should return 404 if the services type was deleted', async () => {
+      const deletableServicesType = inMemoryServicesTypeRepository.createTestServicesType({
+        serviceName: 'Deleted for update',
+        serviceCode: 'TEST08',
+      });
+
+      await request(app)
+        .delete(`/services-type/${deletableServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      const response = await request(app)
+        .patch(`/services-type/${deletableServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        })
+        .send({
+          serviceName: 'Should Fail',
+        });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Service type not found',
+          type: 'not_found_error',
+        },
+      });
+    });
   });
 
   describe('GET /services-type/:id', () => {
@@ -293,6 +389,34 @@ describe('ServicesTypeController', () => {
     it('should return 404 if the services type does not exist', async () => {
       const response = await request(app)
         .get(`/services-type/non-existent-services-type-id`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Services type not found',
+          type: 'not_found_error',
+        },
+      });
+    });
+
+    it('should return 404 if the services type was deleted', async () => {
+      const deletableServicesType = inMemoryServicesTypeRepository.createTestServicesType({
+        serviceName: 'Deleted for get',
+        serviceCode: 'TEST09',
+      });
+
+      await request(app)
+        .delete(`/services-type/${deletableServicesType.id}`)
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      const response = await request(app)
+        .get(`/services-type/${deletableServicesType.id}`)
         .set({
           Authorization: `Bearer ${accessToken}`,
         });

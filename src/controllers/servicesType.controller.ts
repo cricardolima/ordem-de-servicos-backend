@@ -27,8 +27,9 @@ export class ServicesTypeController {
     return this.getServicesTypeUseCase.execute();
   }
 
-  public async createServicesType(req: Request, _res: Response) {
-    return this.createServicesTypeUseCase.execute(req.body as ICreateServicesTypeRequest);
+  public async createServicesType(req: Request, res: Response) {
+    const serviceType = await this.createServicesTypeUseCase.execute(req.body as ICreateServicesTypeRequest);
+    return res.status(201).json(serviceType);
   }
 
   public async deleteServicesType(req: Request, res: Response) {

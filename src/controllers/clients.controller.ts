@@ -20,8 +20,9 @@ export class ClientsController {
     return await this.getClientByIdUseCase.execute(req.params.id as string);
   }
 
-  public async createClient(req: Request) {
-    return await this.createClientUseCase.execute(req.session, req.body);
+  public async createClient(req: Request, res: Response) {
+    const client = await this.createClientUseCase.execute(req.session, req.body);
+    return res.status(201).json(client);
   }
 
   public async deleteClient(req: Request, res: Response) {

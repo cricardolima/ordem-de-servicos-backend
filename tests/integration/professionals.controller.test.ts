@@ -238,8 +238,8 @@ describe('ProfessionalsController', () => {
         success: true,
         message: 'Professional deleted successfully',
       });
-      const deletedProfessional = await inMemoryProfessionalsRepository.findById(professional.id);
-      expect(deletedProfessional).toBeDefined();
+      const deletedProfessional = inMemoryProfessionalsRepository.getByIdIncludingDeleted(professional.id);
+      expect(await inMemoryProfessionalsRepository.findById(professional.id)).toBeNull();
       expect(deletedProfessional?.deletedAt).toBeDefined();
       expect(deletedProfessional?.deletedById).toBe(user.id);
     });

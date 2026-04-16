@@ -1,4 +1,4 @@
-import type { Client, ClientAddress, Professionals, Role, ServicesType } from '@prisma/client';
+import type { Client, ClientAddress, Professionals, Role, ServicesType, User } from '@prisma/client';
 
 type OmitedPrismaModel<T> = Omit<T, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
@@ -38,6 +38,13 @@ export interface ICreateUserRequest {
   registration: string;
   password: string;
   role: Role;
+}
+
+export type IUserResponse = Omit<User, 'password'>;
+
+export function toUserResponse(user: User): IUserResponse {
+  const { password: _password, ...userResponse } = user;
+  return userResponse;
 }
 
 export interface IUpdateUserRequest {

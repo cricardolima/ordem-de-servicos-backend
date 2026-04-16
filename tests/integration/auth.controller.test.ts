@@ -29,28 +29,43 @@ describe('AuthController', () => {
     return inMemoryUserRepository.createTestUser(defaultUser);
   }
 
-  async function createValidRefreshToken(userId: string) {
-    const expiresAt = dayjs().add(1, 'day').unix().toString();
-    const rawToken = 'refresh-token-1';
-    const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
-    await inMemoryRefreshTokenRepository.create({
-      token: hashed,
-      userId: userId,
-      expiresAt,
-    });
-    return { rawToken };
+  function extractRefreshToken(setCookieHeader: string[] | string | undefined): {
+    cookieHeader: string;
+    rawToken: string;
+  } {
+    const cookies = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader].filter(Boolean);
+
+    for (const cookie of cookies) {
+      if (cookie?.startsWith('refreshToken=')) {
+        const [tokenPart] = cookie.split(';');
+
+        if (!tokenPart) {
+          break;
+        }
+
+        return {
+          cookieHeader: cookie,
+          rawToken: decodeURIComponent(tokenPart.replace('refreshToken=', '')),
+        };
+      }
+    }
+
+    throw new Error('Refresh token cookie not found');
   }
 
-  async function _createExpiredRefreshToken(userId: string) {
-    const expiresAt = dayjs().subtract(1, 'day').unix().toString();
-    const rawToken = 'refresh-token-2';
-    const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
-    await inMemoryRefreshTokenRepository.create({
-      token: hashed,
-      userId: userId,
-      expiresAt,
+  async function loginAndGetRefreshToken() {
+    const response = await request(app).post('/auth/login').send({
+      registration: testUser.registration,
+      password: 'admin',
     });
-    return { rawToken };
+
+    return {
+      ...extractRefreshToken(response.get('set-cookie')),
+    };
+  }
+
+  async function createValidRefreshToken() {
+    return await loginAndGetRefreshToken();
   }
 
   beforeAll(async () => {
@@ -69,6 +84,7 @@ describe('AuthController', () => {
   });
 
   beforeEach(() => {
+    inMemoryRefreshTokenRepository.clear();
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -173,7 +189,7 @@ describe('AuthController', () => {
 
   describe('POST /auth/logout', () => {
     it('should return 200 when logging out successfully', async () => {
-      const { rawToken } = await createValidRefreshToken(testUser.id);
+      const { rawToken } = await createValidRefreshToken();
       const response = await request(app)
         .post('/auth/logout')
         .set('Cookie', [`refreshToken=${rawToken}`]);
@@ -211,6 +227,75 @@ describe('AuthController', () => {
         error: {
           message: expect.any(String),
           type: 'not_found_error',
+        },
+      });
+    });
+  });
+
+  describe('POST /auth/refresh-token', () => {
+    it('should return 200 with a new access token and refresh cookie', async () => {
+      const { cookieHeader } = await loginAndGetRefreshToken();
+
+      const response = await request(app).post('/auth/refresh-token').set('Cookie', [cookieHeader]);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('accessToken');
+
+      const cookiesHeader = response.get('set-cookie');
+      const cookies = Array.isArray(cookiesHeader) ? cookiesHeader : [cookiesHeader].filter(Boolean);
+      expect(cookies.join(';')).toMatch(/refreshToken=/);
+      expect(cookies.join(';')).toMatch(/HttpOnly/);
+    });
+
+    it('should return 401 when refresh token is not provided', async () => {
+      const response = await request(app).post('/auth/refresh-token');
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Refresh token not found',
+          type: 'unauthorized_error',
+        },
+      });
+    });
+
+    it('should return 401 when refresh token was revoked', async () => {
+      const { rawToken, cookieHeader } = await loginAndGetRefreshToken();
+      const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+      await inMemoryRefreshTokenRepository.revokeByToken(hashed);
+
+      const response = await request(app).post('/auth/refresh-token').set('Cookie', [cookieHeader]);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Refresh token invalid or revoked',
+          type: 'unauthorized_error',
+        },
+      });
+    });
+
+    it('should return 400 when refresh token is expired', async () => {
+      const { rawToken, cookieHeader } = await loginAndGetRefreshToken();
+      const hashed = crypto.createHash('sha256').update(rawToken).digest('hex');
+      const refreshToken = await inMemoryRefreshTokenRepository.findByToken(hashed);
+
+      if (!refreshToken) {
+        throw new Error('Refresh token not found in repository');
+      }
+
+      refreshToken.expiresAt = dayjs().subtract(1, 'day').unix().toString();
+
+      const response = await request(app).post('/auth/refresh-token').set('Cookie', [cookieHeader]);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Refresh token expired',
+          type: 'business_error',
         },
       });
     });

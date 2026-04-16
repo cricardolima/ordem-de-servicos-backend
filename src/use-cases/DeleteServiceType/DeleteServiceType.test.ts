@@ -39,7 +39,8 @@ describe('DeleteServiceTypeUseCase', () => {
   it('should delete a services type', async () => {
     await deleteServiceTypeUseCase.execute(servicesType.id);
 
-    const deletedServicesType = await inMemoryServicesTypeRepository.findById(servicesType.id);
-    expect(deletedServicesType).toBeNull();
+    const deletedServicesType = inMemoryServicesTypeRepository.getByIdIncludingDeleted(servicesType.id);
+    expect(await inMemoryServicesTypeRepository.findById(servicesType.id)).toBeNull();
+    expect(deletedServicesType?.deletedAt).toBeDefined();
   });
 });

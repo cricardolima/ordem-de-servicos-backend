@@ -23,14 +23,14 @@ export const createUsersRouter = (container: Container): Router => {
   );
   router.post(
     '/',
-    ValidateMiddleware(createUserSchema),
     AuthMiddleware,
+    ValidateMiddleware(createUserSchema),
     asyncHandler((req, res) => controller.createUser(req, res)),
   );
   router.patch(
     '/:id',
-    ValidateMiddleware(updateUserSchema),
     AuthMiddleware,
+    ValidateMiddleware(updateUserSchema),
     asyncHandler((req, res) => controller.updateUser(req, res)),
   );
   router.delete(

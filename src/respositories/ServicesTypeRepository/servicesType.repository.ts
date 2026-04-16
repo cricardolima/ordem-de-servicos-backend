@@ -7,7 +7,9 @@ import type { IServicesTypeRepository } from './servicesType.repository.interfac
 @injectable()
 export class ServicesTypeRepository implements IServicesTypeRepository {
   public async findAll(): Promise<ServicesType[]> {
-    return await prisma.servicesType.findMany();
+    return await prisma.servicesType.findMany({
+      where: { deletedAt: null },
+    });
   }
 
   public async create(servicesType: ICreateServicesTypeRequest): Promise<ServicesType> {
@@ -22,9 +24,10 @@ export class ServicesTypeRepository implements IServicesTypeRepository {
     });
   }
 
-  public async deleteFromId(id: string): Promise<void> {
-    await prisma.servicesType.delete({
-      where: { id },
+  public async softDelete(id: string): Promise<void> {
+    await prisma.servicesType.update({
+      where: { id, deletedAt: null },
+      data: { deletedAt: new Date() },
     });
   }
 
@@ -36,7 +39,7 @@ export class ServicesTypeRepository implements IServicesTypeRepository {
 
   public async updateFromId(id: string, servicesType: IUpdateServicesTypeRequest): Promise<void> {
     await prisma.servicesType.update({
-      where: { id },
+      where: { id, deletedAt: null },
       data: servicesType,
     });
   }

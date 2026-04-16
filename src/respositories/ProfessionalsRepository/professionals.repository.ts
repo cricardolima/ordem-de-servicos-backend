@@ -46,14 +46,17 @@ export class ProfessionalsRepository implements IProfessionalsRepository {
 
   public async findByRegistration(registration: string): Promise<Professionals | null> {
     return await prisma.professionals.findUnique({
-      where: { registration },
+      where: {
+        registration,
+        deletedAt: null,
+      },
     });
   }
 
   public async findById(id: string): Promise<Professionals | null> {
     return (
       (await prisma.professionals.findUnique({
-        where: { id },
+        where: { id, deletedAt: null },
         include: this.include,
       })) ?? null
     );
@@ -68,14 +71,14 @@ export class ProfessionalsRepository implements IProfessionalsRepository {
 
   public async update(id: string, professional: IUpdateProfessionalsRequest): Promise<void> {
     await prisma.professionals.update({
-      where: { id },
+      where: { id, deletedAt: null },
       data: professional,
     });
   }
 
   public async deleteFromId(id: string, session: ISession): Promise<void> {
     await prisma.professionals.update({
-      where: { id },
+      where: { id, deletedAt: null },
       data: { deletedAt: new Date(), deletedById: session.userId },
     });
   }

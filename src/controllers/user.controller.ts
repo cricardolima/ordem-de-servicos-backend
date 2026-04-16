@@ -1,6 +1,5 @@
 import { TYPES } from '@container/types';
-import type { ICreateUserRequest, IUpdateUserRequest } from '@dtos/models';
-import type { User } from '@prisma/client';
+import { type ICreateUserRequest, type IUpdateUserRequest, type IUserResponse, toUserResponse } from '@dtos/models';
 import type { ICreateUserUseCase } from '@use-cases/CreateUser';
 import type { IDeleteUserUseCase } from '@use-cases/DeleteUser';
 import type { IGetUserByIdUseCase } from '@use-cases/GetUserById';
@@ -31,17 +30,19 @@ export class UserController {
     this.getUserByIdUseCase = getUserByIdUseCase;
   }
 
-  public async getUsers(): Promise<User[]> {
-    return this.getUsersUseCase.execute();
+  public async getUsers(): Promise<IUserResponse[]> {
+    const users = await this.getUsersUseCase.execute();
+    return users.map(toUserResponse);
   }
 
-  public async getUser(req: Request): Promise<User> {
-    return this.getUserByIdUseCase.execute(req.params.id as string);
+  public async getUser(req: Request): Promise<IUserResponse> {
+    const user = await this.getUserByIdUseCase.execute(req.params.id as string);
+    return toUserResponse(user);
   }
 
-  public async createUser(req: Request, res: Response): Promise<Response> {
+  public async createUser(req: Request, res: Response<IUserResponse>): Promise<Response<IUserResponse>> {
     const user = await this.createUserUseCase.execute(req.body as ICreateUserRequest);
-    return res.status(201).json(user);
+    return res.status(201).json(toUserResponse(user));
   }
 
   public async updateUser(req: Request, res: Response): Promise<Response> {

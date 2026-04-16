@@ -46,8 +46,9 @@ describe('DeleteProfessionalUseCase', () => {
 
   it('should delete a professional', async () => {
     await deleteProfessionalUseCase.execute(professional.id, session);
-    const deletedProfessional = await inMemoryProfessionalsRepository.findById(professional.id);
+    const deletedProfessional = inMemoryProfessionalsRepository.getByIdIncludingDeleted(professional.id);
 
+    expect(await inMemoryProfessionalsRepository.findById(professional.id)).toBeNull();
     expect(deletedProfessional).toBeDefined();
     expect(deletedProfessional?.deletedAt).toBeDefined();
     expect(deletedProfessional?.deletedById).toBe(session.userId);

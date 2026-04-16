@@ -16,6 +16,6 @@ export class DeleteServiceTypeUseCase implements IDeleteServiceTypeUseCase {
     if (!servicesType) {
       throw new NotFoundException('Service type not found');
     }
-    await this.servicesTypeRepository.deleteFromId(id);
+    await this.servicesTypeRepository.softDelete(id);
   }
 }

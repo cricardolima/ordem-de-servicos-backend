@@ -19,7 +19,7 @@ export const createClientsRouter = (container: Container): Router => {
     '/',
     AuthMiddleware,
     ValidateMiddleware(createClientSchema),
-    asyncHandler((req) => controller.createClient(req)),
+    asyncHandler((req, res) => controller.createClient(req, res)),
   );
   router.delete(
     '/:id',
