@@ -21,6 +21,7 @@ import { DeleteProfessionalUseCase, type IDeleteProfessionalUseCase } from '@use
 import { DeleteServiceTypeUseCase, type IDeleteServiceTypeUseCase } from '@use-cases/DeleteServiceType';
 import { DeleteUserUseCase, type IDeleteUserUseCase } from '@use-cases/DeleteUser';
 import { GetClientByIdUseCase, type IGetClientByIdUseCase } from '@use-cases/GetClientById';
+import { GetClientsUseCase, type IGetClientsUseCase } from '@use-cases/GetClients';
 import { GetProfessionalByIdUseCase, type IGetProfessionalByIdUseCase } from '@use-cases/GetProfessionalById';
 import { GetProfessionalsUseCase, type IGetProfessionalsUseCase } from '@use-cases/GetProfessionals';
 import { GetServicesTypeUseCase, type IGetServicesTypeUseCase } from '@use-cases/GetServicesType';
@@ -59,6 +60,7 @@ export class ContainerApp {
     container.bind<ICreateClientUseCase>(TYPES.ICreateClientUseCase).to(CreateClientUseCase);
     container.bind<IGetClientByIdUseCase>(TYPES.IGetClientByIdUseCase).to(GetClientByIdUseCase);
     container.bind<IDeleteClientUseCase>(TYPES.IDeleteClientUseCase).to(DeleteClientUseCase);
+    container.bind<IGetClientsUseCase>(TYPES.IGetClientsUseCase).to(GetClientsUseCase);
     // Bind dos Repositories
     container.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
     container.bind<IRefreshTokenRepository>(TYPES.IRefreshTokenRepository).to(RefreshTokenRepository);

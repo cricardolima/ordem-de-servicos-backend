@@ -6,4 +6,5 @@ export interface IClientsRepository {
   create(client: ICreateClientRequest): Promise<Client>;
   findById(id: string): Promise<Client | null>;
   deleteFromId(id: string): Promise<void>;
+  findAll(): Promise<Client[]>;
 }

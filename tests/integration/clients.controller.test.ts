@@ -198,6 +198,64 @@ describe('ClientsController', () => {
     });
   });
 
+  describe('GET /clients', () => {
+    it('should return 200 and list all clients', async () => {
+      const firstClient = await inMemoryClientsRepository.create({
+        name: 'List Client 1',
+        phone: '11333333333',
+        address: clientPayload.address,
+      });
+
+      const secondClient = await inMemoryClientsRepository.create({
+        name: 'List Client 2',
+        phone: '11222222222',
+        address: [],
+      });
+
+      const response = await request(app)
+        .get('/clients')
+        .set({
+          Authorization: `Bearer ${accessToken}`,
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: firstClient.id,
+            name: 'List Client 1',
+            phone: '11333333333',
+            clientAddress: [
+              expect.objectContaining({
+                street: 'Rua Teste',
+                number: '123',
+              }),
+            ],
+          }),
+          expect.objectContaining({
+            id: secondClient.id,
+            name: 'List Client 2',
+            phone: '11222222222',
+            clientAddress: [],
+          }),
+        ]),
+      );
+    });
+
+    it('should return 401 when no token is provided', async () => {
+      const response = await request(app).get('/clients');
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({
+        success: false,
+        error: {
+          message: 'Token not found',
+          type: 'unauthorized_error',
+        },
+      });
+    });
+  });
+
   describe('DELETE /clients/:id', () => {
     it('should return 200 and 404 after deleting a client', async () => {
       const client = await inMemoryClientsRepository.create({

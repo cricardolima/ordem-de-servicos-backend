@@ -63,6 +63,10 @@ export class InMemoryClientsRepository extends BaseInMemoryRepository<ClientWith
     return this.activeClients.find((client) => client.id === id) || null;
   }
 
+  public async findAll(): Promise<Client[]> {
+    return this.activeClients;
+  }
+
   public async deleteFromId(id: string): Promise<void> {
     this.updateByProperty('id', id, {
       deletedAt: new Date(),

@@ -26,6 +26,11 @@ export const createClientsRouter = (container: Container): Router => {
     AuthMiddleware,
     asyncHandler((req, res) => controller.deleteClient(req, res)),
   );
+  router.get(
+    '/',
+    AuthMiddleware,
+    asyncHandler(() => controller.getAllClients()),
+  );
 
   return router;
 };

@@ -2,6 +2,7 @@ import { TYPES } from '@container/types';
 import type { ICreateClientUseCase } from '@use-cases/CreateClient';
 import type { IDeleteClientUseCase } from '@use-cases/DeleteClient';
 import type { IGetClientByIdUseCase } from '@use-cases/GetClientById';
+import type { IGetClientsUseCase } from '@use-cases/GetClients/GetClients.interface';
 import type { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 
@@ -14,6 +15,8 @@ export class ClientsController {
     private readonly getClientByIdUseCase: IGetClientByIdUseCase,
     @inject(TYPES.IDeleteClientUseCase)
     private readonly deleteClientUseCase: IDeleteClientUseCase,
+    @inject(TYPES.IGetClientsUseCase)
+    private readonly getClientsUseCase: IGetClientsUseCase,
   ) {}
 
   public async getClientById(req: Request) {
@@ -28,5 +31,9 @@ export class ClientsController {
   public async deleteClient(req: Request, res: Response) {
     await this.deleteClientUseCase.execute(req.params.id as string);
     return res.status(200).json({ success: true, message: 'Client deleted successfully' });
+  }
+
+  public async getAllClients() {
+    return await this.getClientsUseCase.execute();
   }
 }

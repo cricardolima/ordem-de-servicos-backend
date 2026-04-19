@@ -39,4 +39,5 @@ export const TYPES = {
   ICreateClientUseCase: 'ICreateClientUseCase',
   IGetClientByIdUseCase: 'IGetClientByIdUseCase',
   IDeleteClientUseCase: 'IDeleteClientUseCase',
+  IGetClientsUseCase: 'IGetClientsUseCase',
 };

@@ -84,4 +84,13 @@ export class ClientsRepository implements IClientsRepository {
       },
     });
   }
+
+  public async findAll(): Promise<Client[]> {
+    return await prisma.client.findMany({
+      where: { deletedAt: null },
+      include: {
+        clientAddress: true,
+      },
+    });
+  }
 }
