@@ -7,7 +7,7 @@ import { type ZodError, z } from 'zod';
 export const ValidateMiddleware = (schema: z.ZodSchema) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      req.body = schema.parse(req.body);
       next();
     } catch (error: unknown) {
       if (error instanceof z.ZodError) {
