@@ -40,11 +40,30 @@ export interface ICreateUserRequest {
   role: Role;
 }
 
-export type IUserResponse = Omit<User, 'password'>;
+export type IUserResponse = Omit<User, 'password' | 'deletedAt'>;
 
 export function toUserResponse(user: User): IUserResponse {
-  const { password: _password, ...userResponse } = user;
+  const { password: _password, deletedAt: _deletedAt, ...userResponse } = user;
   return userResponse;
+}
+
+export type IClientAddressResponse = Omit<ClientAddress, 'deletedAt'>;
+
+export type IClientWithAddress = Client & {
+  clientAddress?: ClientAddress[];
+};
+
+export type IClientResponse = Omit<IClientWithAddress, 'deletedAt' | 'clientAddress'> & {
+  clientAddress: IClientAddressResponse[];
+};
+
+export function toClientResponse(client: IClientWithAddress): IClientResponse {
+  const { deletedAt: _deletedAt, clientAddress, ...clientResponse } = client;
+
+  return {
+    ...clientResponse,
+    clientAddress: (clientAddress ?? []).map(({ deletedAt: _addressDeletedAt, ...addressResponse }) => addressResponse),
+  };
 }
 
 export interface IUpdateUserRequest {

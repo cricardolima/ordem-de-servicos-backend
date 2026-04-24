@@ -1,4 +1,5 @@
 import { TYPES } from '@container/types';
+import { type IClientResponse, toClientResponse } from '@dtos/models';
 import type { ICreateClientUseCase } from '@use-cases/CreateClient';
 import type { IDeleteClientUseCase } from '@use-cases/DeleteClient';
 import type { IGetClientByIdUseCase } from '@use-cases/GetClientById';
@@ -23,9 +24,9 @@ export class ClientsController {
     return await this.getClientByIdUseCase.execute(req.params.id as string);
   }
 
-  public async createClient(req: Request, res: Response) {
+  public async createClient(req: Request, res: Response<IClientResponse>): Promise<Response<IClientResponse>> {
     const client = await this.createClientUseCase.execute(req.session, req.body);
-    return res.status(201).json(client);
+    return res.status(201).json(toClientResponse(client));
   }
 
   public async deleteClient(req: Request, res: Response) {

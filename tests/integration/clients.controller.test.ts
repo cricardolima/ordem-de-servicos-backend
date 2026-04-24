@@ -105,6 +105,8 @@ describe('ClientsController', () => {
           ],
         }),
       );
+      expect(response.body).not.toHaveProperty('deletedAt');
+      expect(response.body.clientAddress[0]).not.toHaveProperty('deletedAt');
     });
 
     it('should return 400 when the client already exists', async () => {

@@ -272,7 +272,6 @@ describe('UserController', () => {
       expect(response.body.password).toBeUndefined();
       expect(response.body.createdAt).toBeDefined();
       expect(response.body.updatedAt).toBeDefined();
-      expect(response.body.deletedAt).toBeNull();
     });
 
     it('should return 401 if the user is not authenticated', async () => {
